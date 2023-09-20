@@ -18,7 +18,9 @@ In a first time :
 - Steam: get latest proton-ge and install it in the right place
  
 ## My expained choices :
+
 *And what kind of benefits I see with them :*
+
 **Gnome desktop :**
 - Simple, configurable and productive environment
 - I have always like their guidelines since the beginning of the project
