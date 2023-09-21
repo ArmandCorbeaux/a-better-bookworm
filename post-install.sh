@@ -121,7 +121,7 @@ fi
 
 
 ################################################################################
-# APT - UPDATE MINIMAL SYSTEM WITH BACKPORTS PACKAGES
+# APT - UPDATE SYSTEM WITH BACKPORTS PACKAGES
 ################################################################################
 
 sudo apt update -y
