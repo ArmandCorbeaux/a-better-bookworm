@@ -125,8 +125,7 @@ fi
 ################################################################################
 
 sudo apt update -y
-sudo apt -t "$dist_codename"-backports full-upgrade -y
-
+sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports full-upgrade -y --quiet
 
 ################################################################################
 # CHANGE BTRFS FLAGS IN FSTAB
@@ -164,7 +163,16 @@ fi
 
 echo "Install minimal Gnome Desktop"
 sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install gnome-shell gnome-console gnome-tweaks nautilus -y --quiet >> /dev/null
-sudo DEBIAN_FRONTEND=noninteractive apt autoremove --purge gnome-shell-extension-prefs -y --quiet >> /dev/null
+sudo DEBIAN_FRONTEND=noninteractive apt autoremove --purge gnome-shell-extension-prefs -y --quiet >> /dev/null # don't need gnome-shell-extension-prefs as gnome-shell-extension-manager will be installed and performs the same stuff
+
+################################################################################
+# INSTALL SOME TOOLS
+################################################################################
+sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install curl git -y --quiet >> /dev/null
+
+sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install cups -y --quiet >> /dev/null
+
+sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install python3-venv python3-pip -y --quiet >> /dev/null
 
 ################################################################################
 # CUSTOMIZE BOOT
@@ -174,6 +182,7 @@ echo "Customize Boot Splash"
 # install plymouth-theme and set theme to use OEM Bios Logo
 sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports plymouth-themes -y --quiet >> /dev/null
 sudo plymouth-set-default-theme -R bgrt >> /dev/null
+echo "Plymouth splash has been changed."
 
 # Customize GRUB values
 NEW_GRUB_TIMEOUT=0  # Immediatly load the kernel
@@ -189,15 +198,26 @@ sudo sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"$NEW_G
 sudo sed -i "s/GRUB_BACKGROUND=.*/GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"/" $GRUB_PATH
 
 sudo update-grub >> /dev/null
+echo "GRUB settings have been changed."
 
 ################################################################################
 # ADD ZRAMSWAP
 ################################################################################
-echo "Install ZRAM swap"
+echo "Install and configure ZRAM swap"
 sudo DEBIAN_FRONTEND=noninteractive apt -t $dist_codename-backports zram-tools -y --quiet >> /dev/null
 
+# Your desired values
+ALGO="zstd"
+PERCENT=25
+PRIORITY=100
+
+# Uncomment and modify the values
+sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
+sudo sed -i "s/#\s*PERCENT=.*/PERCENT=$PERCENT/" /etc/default/zramswap
+sudo sed -i "s/#\s*PRIORITY=.*/PRIORITY=$PRIORITY/" /etc/default/zramswap
+
 ################################################################################
-# FLATPAK SOFTWARE STORE
+# FLATPAK - ADD SOFTWARE STORE
 ################################################################################
 
 echo "Add flatpak support"
@@ -207,42 +227,71 @@ sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flat
 sudo flatpak update
 
 ################################################################################
+# FLATPAK - ADD SOFTWARES
+################################################################################
+# List of Flatpak applications to install
+flathub_applications_list=(
+  "com.mattjakeman.ExtensionManager"
+  "io.github.realmazharhussain.GdmSettings"
+  "io.missioncenter.MissionCenter"
+  "org.gnome.Evince"
+  "org.gnome.Loupe"
+  "org.gnome.Snapshot"
+  "org.gnome.Totem"
+  "org.gnome.font-viewer"
+  "org.gnome.seahorse.Application"
+)
+
+# Iterate through the applications and install them
+for flathub_app in "${flathub_applications_list[@]}"; do
+  flatpak install "$flathub_app" -y >> /dev/null
+done
+################################################################################
 # APT - ADD EXTRA REPOSITORIES
 ################################################################################
 
-echo "Add OneDrive Linux repository"
+# Function to add a repository
+add_repository() {
+    echo "Adding $1 repository"
 
-wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/Debian_12/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/Debian_12/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
+    key_url=$2
+    repository_url=$3
+    keyring_path="/usr/share/keyrings/$1.gpg"
 
+    curl -fsSL "$key_url" | sudo gpg --dearmor -o "$keyring_path"
 
-echo "Add Docker repository"
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+    echo "deb [signed-by=$keyring_path] $repository_url" | sudo tee "/etc/apt/sources.list.d/$1.list" > /dev/null
+}
 
-echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Add OneDrive Linux repository
+add_repository "onedrive" "https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/Debian_12/Release.key" "https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/Debian_12/"
 
+# Add Docker repository
+add_repository "docker" "https://download.docker.com/linux/debian/gpg" "https://download.docker.com/linux/debian"
 
-echo "Add Google Cloud SDK repository"
+# Add Google Cloud SDK repository
+add_repository "google-cloud-sdk" "https://packages.cloud.google.com/apt/doc/apt-key.gpg" "https://packages.cloud.google.com/apt"
 
-echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo tee /usr/share/keyrings/cloud.google.gpg
+# Add Steam repository
+add_repository "steam" "https://repo.steampowered.com/steam/archive/stable/steam.gpg" "https://repo.steampowered.com/steam/"
 
-echo "Add Steam repository"
-sudo tee /etc/apt/sources.list.d/steam-stable.list <<'EOF'
-deb [arch=amd64,i386 signed-by=/usr/share/keyrings/steam.gpg] https://repo.steampowered.com/steam/ stable steam
-deb-src [arch=amd64,i386 signed-by=/usr/share/keyrings/steam.gpg] https://repo.steampowered.com/steam/ stable steam
-EOF
-curl https://repo.steampowered.com/steam/archive/stable/steam.gpg | sudo tee /usr/share/keyrings/steam.gpg
 sudo dpkg --add-architecture i386
 
-sudo apt-get install \
+# update the apt list
+sudo apt update
+
+################################################################################
+# SYSTEM - GET SOME EXTRA SOFTWARES
+################################################################################
+
+################################################################################
+# SYSTEM - GET SOME EXTRA SOFTWARES
+################################################################################
+
+sudo apt install \
   libgl1-mesa-dri:amd64 \
   libgl1-mesa-dri:i386 \
   libgl1-mesa-glx:amd64 \
   libgl1-mesa-glx:i386 \
-  steam-launcher
+  steam-launcher \
+  google-cloud-cli
