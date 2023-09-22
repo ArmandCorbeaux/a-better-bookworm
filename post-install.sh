@@ -201,20 +201,35 @@ sudo update-grub >> /dev/null
 echo "GRUB settings have been changed."
 
 ################################################################################
-# ADD ZRAMSWAP
+# ADD ZRAMSWAP AND DPHYS-SWAPFILE
 ################################################################################
-echo "Install and configure ZRAM swap"
-sudo DEBIAN_FRONTEND=noninteractive apt -t $dist_codename-backports zram-tools -y --quiet >> /dev/null
+echo "Install and configure swap spaces"
+sudo DEBIAN_FRONTEND=noninteractive apt -t $dist_codename-backports zram-tools dphys-swapfile -y --quiet >> /dev/null
 
-# Your desired values
+# ZRAM - desired values
 ALGO="zstd"
-PERCENT=25
+PERCENT=100
 PRIORITY=100
 
-# Uncomment and modify the values
+# ZRAM - uncomment and modify the values
 sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
 sudo sed -i "s/#\s*PERCENT=.*/PERCENT=$PERCENT/" /etc/default/zramswap
 sudo sed -i "s/#\s*PRIORITY=.*/PRIORITY=$PRIORITY/" /etc/default/zramswap
+
+# DPHYS-SWAPFILE - configure
+sudo sed -i 's/#CONF_MAXSWAP=2048/CONF_MAXSWAP=/g' /etc/dphys-swapfile
+
+# Turn off the swap file
+sudo dphys-swapfile swapoff
+
+# Uninstall dphys-swapfile
+sudo dphys-swapfile uninstall
+
+# Set up dphys-swapfile with the default settings
+sudo dphys-swapfile setup
+
+# Turn on the swap file
+sudo dphys-swapfile swapon
 
 ################################################################################
 # FLATPAK - ADD SOFTWARE STORE
@@ -231,15 +246,18 @@ sudo flatpak update
 ################################################################################
 # List of Flatpak applications to install
 flathub_applications_list=(
-  "com.mattjakeman.ExtensionManager"
-  "io.github.realmazharhussain.GdmSettings"
-  "io.missioncenter.MissionCenter"
-  "org.gnome.Evince"
-  "org.gnome.Loupe"
-  "org.gnome.Snapshot"
-  "org.gnome.Totem"
-  "org.gnome.font-viewer"
-  "org.gnome.seahorse.Application"
+  "com.mattjakeman.ExtensionManager" # gnome-shell-extension-manager
+  "io.github.realmazharhussain.GdmSettings" # personalize GDM settings
+  "io.missioncenter.MissionCenter" # resource monitoring
+  "org.gnome.Evince" # document viewer
+  "org.gnome.Loupe" # image viewer
+  "org.gnome.Snapshot" # camera viewer
+  "org.gnome.Totem" # video player
+  "org.gnome.font-viewer" # font viewer
+  "org.gnome.seahorse.Application" # password and key handler
+  "org.gnome.Firmware" # hardware firmware updater
+  "org.gnome.Boxes" # Virtual Machine
+  "org.gnome.Connections" # access with VNC and RDP
 )
 
 # Iterate through the applications and install them
@@ -283,15 +301,80 @@ sudo apt update
 ################################################################################
 # SYSTEM - GET SOME EXTRA SOFTWARES
 ################################################################################
+# Create a temporary directory for deb files
+mkdir -p ./temp_deb
+touch ./temp_deb/safely_delete_this_directory
+
+# Function to extract the latest Docker Desktop deb package URL
+get_latest_docker_url() {
+    local docker_url=$(curl -sL "https://docs.docker.com/desktop/install/debian/" | grep -oP 'https://desktop.docker.com/linux/main/amd64/docker-desktop-\d+\.\d+\.\d+-amd64.deb' | head -n 1)
+    echo "$docker_url"
+}
+
+# Download deb files
+declare -A deb_urls=(
+    ["Google_Chrome"]="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+    ["Hyper_Terminal"]="https://releases.hyper.is/download/deb"
+    ["Microsoft_Visual_Code"]="http://go.microsoft.com/fwlink/?LinkID=760868"
+    ["Valve_Steam"]="https://cdn.cloudflare.steamstatic.com/client/installer/steam.deb"
+    ["Docker_Desktop"]=$(get_latest_docker_url)
+)
+
+for app in "${!deb_urls[@]}"; do
+    wget  --quiet --show-progress "${deb_urls[$app]}" -O "./temp_deb/${app// /_}.deb"
+done
+
+# Install deb packages
+sudo apt install ./temp_deb/*.deb
+
+# Clean up the temporary directory
+rm -Rf ./temp_deb
 
 ################################################################################
 # SYSTEM - GET SOME EXTRA SOFTWARES
 ################################################################################
 
-sudo apt install \
+sudo DEBIAN_FRONTEND=noninteractive apt install \
   libgl1-mesa-dri:amd64 \
   libgl1-mesa-dri:i386 \
   libgl1-mesa-glx:amd64 \
   libgl1-mesa-glx:i386 \
   steam-launcher \
-  google-cloud-cli
+  -y --quiet >> /dev/null
+
+sudo DEBIAN_FRONTEND=noninteractive apt install \
+  google-cloud-cli \
+  -y --quiet >> /dev/null
+
+sudo DEBIAN_FRONTEND=noninteractive apt install \
+  onedrive \
+  -y --quiet >> /dev/null
+
+################################################################################
+# SYSTEM - ENABLE SERVICES
+################################################################################
+systemctl --user enable docker-desktop
+systemctl --user enable onedrive
+
+################################################################################
+# GNOME - INSTALL GNOME-SHELL EXTENSIONS
+################################################################################
+
+# gnome-shell-extension URLs
+extension_urls=(
+  "https://extensions.gnome.org/extension-data/tiling-assistantleleat-on-github.v43.shell-extension.zip"
+  "https://extensions.gnome.org/extension-data/onedrivediegomerida.com.v11.shell-extension.zip"
+  "https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v84.shell-extension.zip"
+  "https://extensions.gnome.org/extension-data/BingWallpaperineffable-gmail.com.v45.shell-extension.zip"
+  "https://extensions.gnome.org/extension-data/caffeinepatapon.info.v51.shell-extension.zip"
+  "https://extensions.gnome.org/extension-data/appindicatorsupportrgcjonas.gmail.com.v53.shell-extension.zip"
+)
+
+# Install each extension
+for url in "${extension_urls[@]}"; do
+  gnome-extensions install "$url"
+done
+
+################################################################################
+# FONTS - INSTALL
+################################################################################
