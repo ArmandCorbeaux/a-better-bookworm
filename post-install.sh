@@ -125,7 +125,7 @@ fi
 ################################################################################
 
 sudo apt update -y
-sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports full-upgrade -y --quiet
+sudo apt -t $dist_codename-backports full-upgrade -y --quiet
 
 ################################################################################
 # CHANGE BTRFS FLAGS IN FSTAB
@@ -162,17 +162,18 @@ fi
 ################################################################################
 
 echo "Install minimal Gnome Desktop"
-sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install gnome-shell gnome-console gnome-tweaks nautilus -y --quiet >> /dev/null
-sudo DEBIAN_FRONTEND=noninteractive apt autoremove --purge gnome-shell-extension-prefs -y --quiet >> /dev/null # don't need gnome-shell-extension-prefs as gnome-shell-extension-manager will be installed and performs the same stuff
+sudo apt -t $dist_codename-backports install gnome-shell gnome-console gnome-tweaks nautilus -y --quiet
+sudo apt autoremove --purge gnome-shell-extension-prefs -y --quiet
+# don't need gnome-shell-extension-prefs as gnome-shell-extension-manager will be installed and performs the same stuff
 
 ################################################################################
 # INSTALL SOME TOOLS
 ################################################################################
-sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install curl git -y --quiet >> /dev/null
+sudo apt -t $dist_codename-backports install curl git -y --quiet
 
-sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install cups -y --quiet >> /dev/null
+sudo apt -t $dist_codename-backports install cups -y --quiet
 
-sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install python3-venv python3-pip -y --quiet >> /dev/null
+sudo apt -t $dist_codename-backports install python3-venv python3-pip -y --quiet
 
 ################################################################################
 # CUSTOMIZE BOOT
@@ -180,8 +181,8 @@ sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install py
 echo "Customize Boot Splash"
 
 # install plymouth-theme and set theme to use OEM Bios Logo
-sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports plymouth-themes -y --quiet >> /dev/null
-sudo plymouth-set-default-theme -R bgrt >> /dev/null
+sudo apt -t $dist_codename-backports plymouth-themes -y --quiet
+sudo plymouth-set-default-theme -R bgrt
 echo "Plymouth splash has been changed."
 
 # Customize GRUB values
@@ -197,14 +198,14 @@ sudo sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"$NEW_G
 # Change the GRUB_BACKGROUND value
 sudo sed -i "s/GRUB_BACKGROUND=.*/GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"/" $GRUB_PATH
 
-sudo update-grub >> /dev/null
+sudo update-grub
 echo "GRUB settings have been changed."
 
 ################################################################################
 # ADD ZRAMSWAP AND DPHYS-SWAPFILE
 ################################################################################
 echo "Install and configure swap spaces"
-sudo DEBIAN_FRONTEND=noninteractive apt -t $dist_codename-backports zram-tools dphys-swapfile -y --quiet >> /dev/null
+sudo apt -t $dist_codename-backports install zram-tools dphys-swapfile -y --quiet
 
 # ZRAM - desired values
 ALGO="zstd"
@@ -236,7 +237,7 @@ sudo dphys-swapfile swapon
 ################################################################################
 
 echo "Add flatpak support"
-sudo DEBIAN_FRONTEND=noninteractive apt -t "$dist_codename"-backports install gnome-software-plugin-flatpak -y --quiet >> /dev/null
+sudo apt -t $dist_codename-backports install gnome-software-plugin-flatpak -y --quiet
 echo "Add FlatHub repository"
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 sudo flatpak update
@@ -262,7 +263,7 @@ flathub_applications_list=(
 
 # Iterate through the applications and install them
 for flathub_app in "${flathub_applications_list[@]}"; do
-  flatpak install "$flathub_app" -y >> /dev/null
+  flatpak install "$flathub_app" -y
 done
 ################################################################################
 # APT - ADD EXTRA REPOSITORIES
@@ -275,23 +276,24 @@ add_repository() {
     key_url=$2
     repository_url=$3
     keyring_path="/usr/share/keyrings/$1.gpg"
+    archs=$4
 
     curl -fsSL "$key_url" | sudo gpg --dearmor -o "$keyring_path"
 
-    echo "deb [signed-by=$keyring_path] $repository_url" | sudo tee "/etc/apt/sources.list.d/$1.list" > /dev/null
+    echo "deb [arch=$archs signed-by=$keyring_path] $repository_url" | sudo tee "/etc/apt/sources.list.d/$1.list"
 }
 
 # Add OneDrive Linux repository
-add_repository "onedrive" "https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/Debian_12/Release.key" "https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/Debian_12/"
+add_repository "onedrive" "https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/Debian_12/Release.key" "https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/Debian_12/ ./" "$(dpkg --print-architecture)"
 
 # Add Docker repository
-add_repository "docker" "https://download.docker.com/linux/debian/gpg" "https://download.docker.com/linux/debian"
+add_repository "docker" "https://download.docker.com/linux/debian/gpg" "https://download.docker.com/linux/debian $dist_codename stable" "$(dpkg --print-architecture)"
 
 # Add Google Cloud SDK repository
-add_repository "google-cloud-sdk" "https://packages.cloud.google.com/apt/doc/apt-key.gpg" "https://packages.cloud.google.com/apt"
+add_repository "google-cloud-sdk" "https://packages.cloud.google.com/apt/doc/apt-key.gpg" "https://packages.cloud.google.com/apt cloud-sdk main" "$(dpkg --print-architecture)"
 
 # Add Steam repository
-add_repository "steam" "https://repo.steampowered.com/steam/archive/stable/steam.gpg" "https://repo.steampowered.com/steam/"
+add_repository "steam" "https://repo.steampowered.com/steam/archive/stable/steam.gpg" "https://repo.steampowered.com/steam/ stable steam" "amd64,i368"
 
 sudo dpkg --add-architecture i386
 
