@@ -121,13 +121,6 @@ fi
 
 
 ################################################################################
-# APT - UPDATE SYSTEM WITH BACKPORTS PACKAGES
-################################################################################
-
-sudo apt update -y
-sudo apt -t $dist_codename-backports full-upgrade -y --quiet
-
-################################################################################
 # CHANGE BTRFS FLAGS IN FSTAB
 ################################################################################
 
@@ -265,6 +258,7 @@ flathub_applications_list=(
 for flathub_app in "${flathub_applications_list[@]}"; do
   flatpak install "$flathub_app" -y
 done
+
 ################################################################################
 # APT - ADD EXTRA REPOSITORIES
 ################################################################################
@@ -323,7 +317,7 @@ declare -A deb_urls=(
 )
 
 for app in "${!deb_urls[@]}"; do
-    wget  --quiet --show-progress "${deb_urls[$app]}" -O "./temp_deb/${app// /_}.deb"
+    wget "${deb_urls[$app]}" -O "./temp_deb/${app// /_}.deb"
 done
 
 # Install deb packages
@@ -380,3 +374,11 @@ done
 ################################################################################
 # FONTS - INSTALL
 ################################################################################
+
+################################################################################
+# APT - UPDATE SYSTEM WITH BACKPORTS PACKAGES
+################################################################################
+
+sudo apt update -y
+sudo apt -t $dist_codename-backports full-upgrade -y --quiet
+
