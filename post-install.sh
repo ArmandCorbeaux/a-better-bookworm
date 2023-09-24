@@ -6,7 +6,7 @@
 # - system installed on a btrfs partition
 
 ################################################################################
-# CHECK OS ENVIRONMENT
+# 0 - CHECK OS ENVIRONMENT
 ################################################################################
 
 lsb_release_path=$(which lsb_release 2> /dev/null)
@@ -33,7 +33,7 @@ fi
 
 
 ################################################################################
-# APT - SOURCES.LIST - ADD BACKPORTS REPOSITORY
+# 1- APT - SOURCES.LIST - ADD BACKPORTS REPOSITORY
 ################################################################################
 
 # Check if backports entry already exists in sources.list
@@ -49,7 +49,7 @@ fi
 
 
 ################################################################################
-# APT - SOURCES.LIST - ADD CONTRIB AND NON-FREE ENTRIES
+# 2 - APT - SOURCES.LIST - ADD CONTRIB AND NON-FREE ENTRIES
 ################################################################################
 
 # Create a new sources.list.tmp file to store the modified contents
@@ -90,7 +90,7 @@ fi
 
 
 ################################################################################
-# APT - SOURCES.LIST - DISABLE DEB-SRC LINES
+# 3 - APT - SOURCES.LIST - DISABLE DEB-SRC LINES
 ################################################################################
 
 # Temp file to store modified lines
@@ -121,7 +121,7 @@ fi
 
 
 ################################################################################
-# CHANGE BTRFS FLAGS IN FSTAB
+# 4 - CHANGE BTRFS FLAGS IN FSTAB
 ################################################################################
 
 # Variable to track if changes were made
@@ -129,9 +129,9 @@ fstab_modifications_made=false
 
 # Check each line in /etc/fstab
 while IFS= read -r line; do
-  if [[ "$line" == *"btrfs"* ]] && [[ "$line" == *"default"* ]]; then
-    # Replace 'default' with 'ssd,discard=async,autodefrag,compress=zstd'
-    updated_line=$(echo "$line" | sed 's/default/ssd,discard=async,autodefrag,compress=zstd,noatime/')
+  if [[ "$line" == *"btrfs"* ]] && [[ "$line" == *"defaults"* ]]; then
+    # Replace 'defaults' with 'ssd,discard=async,autodefrag,compress=zstd'
+    updated_line=$(echo "$line" | sed 's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime/')
     echo "Replacing line: $line"
     echo "With: $updated_line"
 
@@ -151,30 +151,31 @@ else
 fi
 
 ################################################################################
-# INSTALL MINIMAL GNOME DESKTOP
+# 5 - INSTALL MINIMAL GNOME DESKTOP
 ################################################################################
 
 echo "Install minimal Gnome Desktop"
+sudo apt update
 sudo apt -t $dist_codename-backports install gnome-shell gnome-console gnome-tweaks nautilus -y --quiet
 sudo apt autoremove --purge gnome-shell-extension-prefs -y --quiet
 # don't need gnome-shell-extension-prefs as gnome-shell-extension-manager will be installed and performs the same stuff
 
 ################################################################################
-# INSTALL SOME TOOLS
+# 6 - INSTALL SOME TOOLS
 ################################################################################
-sudo apt -t $dist_codename-backports install curl git -y --quiet
+sudo apt -t $dist_codename-backports install curl git -y
 
-sudo apt -t $dist_codename-backports install cups -y --quiet
+sudo apt -t $dist_codename-backports install cups -y
 
 sudo apt -t $dist_codename-backports install python3-venv python3-pip -y --quiet
 
 ################################################################################
-# CUSTOMIZE BOOT
+# 7 -CUSTOMIZE BOOT
 ################################################################################
 echo "Customize Boot Splash"
 
 # install plymouth-theme and set theme to use OEM Bios Logo
-sudo apt -t $dist_codename-backports plymouth-themes -y --quiet
+sudo apt -t $dist_codename-backports install plymouth-themes -y
 sudo plymouth-set-default-theme -R bgrt
 echo "Plymouth splash has been changed."
 
@@ -195,7 +196,7 @@ sudo update-grub
 echo "GRUB settings have been changed."
 
 ################################################################################
-# ADD ZRAMSWAP AND DPHYS-SWAPFILE
+# 8 - ADD ZRAMSWAP AND DPHYS-SWAPFILE
 ################################################################################
 echo "Install and configure swap spaces"
 sudo apt -t $dist_codename-backports install zram-tools dphys-swapfile -y --quiet
@@ -226,17 +227,17 @@ sudo dphys-swapfile setup
 sudo dphys-swapfile swapon
 
 ################################################################################
-# FLATPAK - ADD SOFTWARE STORE
+# 9 - FLATPAK - ADD SOFTWARE STORE
 ################################################################################
 
 echo "Add flatpak support"
-sudo apt -t $dist_codename-backports install gnome-software-plugin-flatpak -y --quiet
+sudo apt -t $dist_codename-backports install gnome-software-plugin-flatpak -y
 echo "Add FlatHub repository"
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 sudo flatpak update
 
 ################################################################################
-# FLATPAK - ADD SOFTWARES
+# 10 - FLATPAK - ADD SOFTWARES
 ################################################################################
 # List of Flatpak applications to install
 flathub_applications_list=(
@@ -260,7 +261,7 @@ for flathub_app in "${flathub_applications_list[@]}"; do
 done
 
 ################################################################################
-# APT - ADD EXTRA REPOSITORIES
+# 11- APT - ADD EXTRA REPOSITORIES
 ################################################################################
 
 # Function to add a repository
@@ -287,7 +288,7 @@ add_repository "docker" "https://download.docker.com/linux/debian/gpg" "https://
 add_repository "google-cloud-sdk" "https://packages.cloud.google.com/apt/doc/apt-key.gpg" "https://packages.cloud.google.com/apt cloud-sdk main" "$(dpkg --print-architecture)"
 
 # Add Steam repository
-add_repository "steam" "https://repo.steampowered.com/steam/archive/stable/steam.gpg" "https://repo.steampowered.com/steam/ stable steam" "amd64,i368"
+add_repository "steam" "https://repo.steampowered.com/steam/archive/stable/steam.gpg" "https://repo.steampowered.com/steam/ stable steam" "amd64,i386"
 
 sudo dpkg --add-architecture i386
 
@@ -295,7 +296,7 @@ sudo dpkg --add-architecture i386
 sudo apt update
 
 ################################################################################
-# SYSTEM - GET SOME EXTRA SOFTWARES
+# 12 - SYSTEM - GET SOME EXTRA SOFTWARES
 ################################################################################
 # Create a temporary directory for deb files
 mkdir -p ./temp_deb
@@ -321,39 +322,39 @@ for app in "${!deb_urls[@]}"; do
 done
 
 # Install deb packages
-sudo apt install ./temp_deb/*.deb
+sudo apt install ./temp_deb/*.deb -y
 
 # Clean up the temporary directory
 rm -Rf ./temp_deb
 
 ################################################################################
-# SYSTEM - GET SOME EXTRA SOFTWARES
+# 13 - SYSTEM - GET SOME EXTRA SOFTWARES
 ################################################################################
 
-sudo DEBIAN_FRONTEND=noninteractive apt install \
+sudo apt install \
   libgl1-mesa-dri:amd64 \
   libgl1-mesa-dri:i386 \
   libgl1-mesa-glx:amd64 \
   libgl1-mesa-glx:i386 \
   steam-launcher \
-  -y --quiet >> /dev/null
+  -y
 
-sudo DEBIAN_FRONTEND=noninteractive apt install \
+sudo apt install \
   google-cloud-cli \
-  -y --quiet >> /dev/null
+  -y
 
-sudo DEBIAN_FRONTEND=noninteractive apt install \
+sudo apt install \
   onedrive \
-  -y --quiet >> /dev/null
+  -y
 
 ################################################################################
-# SYSTEM - ENABLE SERVICES
+# 14 - SYSTEM - ENABLE SERVICES
 ################################################################################
 systemctl --user enable docker-desktop
 systemctl --user enable onedrive
 
 ################################################################################
-# GNOME - INSTALL GNOME-SHELL EXTENSIONS
+# 15 - GNOME - INSTALL GNOME-SHELL EXTENSIONS
 ################################################################################
 
 # gnome-shell-extension URLs
@@ -371,6 +372,20 @@ for url in "${extension_urls[@]}"; do
   gnome-extensions install "$url"
 done
 
+# enable extensions
+extension_uuid=(
+  "BingWallpaper@ineffable-gmail.com"
+  "onedrive@diegomerida.com"
+  "dash-to-dock@micxgx.gmail.com"
+  "appindicatorsupport@rgcjonas.gmail.com"
+  "tiling-assistant@leleat-on-github"
+  "caffeine@patapon.info"
+)
+
+for uuid in "${extension_uuid[@]}"; do
+  gnome-extension install "$uuid"
+done
+
 ################################################################################
 # FONTS - INSTALL
 ################################################################################
@@ -380,5 +395,5 @@ done
 ################################################################################
 
 sudo apt update -y
-sudo apt -t $dist_codename-backports full-upgrade -y --quiet
+sudo apt -t $dist_codename-backports full-upgrade -y
 
