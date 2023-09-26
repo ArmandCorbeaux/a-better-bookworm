@@ -33,24 +33,28 @@ In a first time :
 - I like to have a **wallpaper which changes automatically everyday** and make me discover some nice places of the world. Bing wallpapers provide me this option.
 
 **Use btrfs rather than ext4 :**
+DONE
 - **Snapshots** of the system can be perform if needed.
 - It performs **automatic data compression**. Zstd seems to be the best choice between CPU use and compression ratio.
 - There's **optimizations** for rewritable electronic chip storage systems with lilmited life time (SSD,M2, ...) *[ even if with calculations, progress have been perform since the beginning of the technology, and now they can be used more than 10 years... ]*
 
 **Use ZramSwap rather than swap partition :**
+DONE
 - Zram creates a **swap space in memory**. And RAM has has quicker access than drive.
 - It performs **automatic data compression**. Zstd seems to be the best choice between CPU use and compression ratio.
 - In some point of view, ZRAM can be see as a process to perform RAM compression. And **virtually "expand" the available memory size** of the targetted computer.
-- I know that if I need some extra swap space which use the drive, I can use dphys-swapfile.
+- I know that if I need some extra swap space which use the drive, dphys-swapfile can be used.
 
 **Use flatpak for some kind of applications rather than debian packages :**
+DONE
 - Flatpak can be used by all kinds of desktop applications, and aims to be **as agnostic as possible** regarding how applications are built. There are **no requirements** regarding which programming languages, build tools, toolkits or frameworks can be used.
 - Desktop applications are **sandboxed**.
 - Having the **latest versions** of the installed applications.
 - **Expand the application store**.
 
 **Add some sources repositories for applications from major companies :**
-- Google Chrome, Microsoft Visual Studio Code, and Docker
+DONE
+- Google Chrome, Microsoft Visual Studio Code, Docker, Google Cloud CLI
 - They are **widely used** and **well supported**.
 - They are **in some way an "industry standard"**.
 - Repositories provide **sometimes supported more up-to-date packages for the OS**.
@@ -64,6 +68,7 @@ In a first time :
 - "Noto Color Emoji" is installed, as sometimes emoji are needed in CLI.
 
 **Have a "modern terminal" :**
+DONE
 - Font ligature support
 - Easy to use and configure
 - Better if it's lighweight
@@ -71,6 +76,7 @@ In a first time :
 - After looking after a terminal with these features, I have choosen Hyper Terminal.
 
 **Have OneDrive support and use it to backup datas:**
+DONE
 - If you have a "Microsoft 365" account, I think that it's nice to be able to use the allowed space on OneDrive.
 - Onedrive client on Linux has a feature to exclude temporary files and folders. As when a project is builded or developped.
 
