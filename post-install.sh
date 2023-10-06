@@ -412,6 +412,41 @@ fi
 wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 
 # Now extract the fonts
+unzip ./Firacode.zip -d FiraCode
+unzip ./VictorMonoAll.zip -d VictorMonoAll
+sudo mv Firacode /usr/share/fonts/truetype
+sudo mv TTF /usr/share/fonts/VictorMono
+
+################################################################################
+# Enable MGLRU kernel feature as a service
+################################################################################
+
+SERVICE_FILE_CONTENT="[Unit]
+Description=Multi-Gen LRU Enabler Service
+ConditionPathExists=/sys/kernel/mm/lru_gen/enabled
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c \"/bin/echo y > /sys/kernel/mm/lru_gen/enabled\"
+ExecStartPost=/bin/bash -c \"/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms\"
+
+[Install]
+WantedBy=default.target
+"
+
+SERVICE_FILE_PATH="/etc/systemd/system/mglru.service"
+
+# Save the service file content to the specified location
+echo "$SERVICE_FILE_CONTENT" | sudo tee "$SERVICE_FILE_PATH" > /dev/null
+
+# Reload systemd to recognize the new service
+sudo systemctl daemon-reload
+
+# Start and enable the mglru service
+sudo systemctl start mglru.service
+sudo systemctl enable mglru.service
+
+echo "mglru.service created and enabled."
 
 ################################################################################
 # APT - UPDATE SYSTEM WITH BACKPORTS PACKAGES
@@ -419,4 +454,3 @@ wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 
 sudo apt update -y
 sudo apt -t $dist_codename-backports full-upgrade -y
-
