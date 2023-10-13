@@ -531,7 +531,7 @@ if [[ -z "$ssid" || -z "$password" ]]; then
 fi
 
 # Generate a random connection name
-connection_name="Wi-Fi-$(date +%s)"
+connection_name="$ssid"
 
 # Create a new NetworkManager connection profile
 sudo nmcli connection add type wifi con-name "$connection_name" ifname '*' ssid "$ssid" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$password"
