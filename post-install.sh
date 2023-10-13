@@ -36,57 +36,57 @@ fi
 # 1- APT - SOURCES.LIST - ADD BACKPORTS REPOSITORY
 ################################################################################
 
-# Check if backports entry already exists in sources.list
-if sudo grep -q "$dist_codename-backports" /etc/apt/sources.list; then
-    echo "Backports repository entry already exists. Nothing to do."
-else
-    # Add the backports repository entry to sources.list
-    echo "Adding backports repository entry..."
-    echo "deb http://deb.debian.org/debian $dist_codename-backports main non-free-firmware" | sudo tee -a /etc/apt/sources.list > /dev/null
-    echo "deb-src http://deb.debian.org/debian $dist_codename-backports main non-free-firmware" | sudo tee -a /etc/apt/sources.list > /dev/null
-    echo "Backports repository entry added."
-fi
+# # Check if backports entry already exists in sources.list
+# if sudo grep -q "$dist_codename-backports" /etc/apt/sources.list; then
+#     echo "Backports repository entry already exists. Nothing to do."
+# else
+#     # Add the backports repository entry to sources.list
+#     echo "Adding backports repository entry..."
+#     echo "deb http://deb.debian.org/debian $dist_codename-backports main non-free-firmware" | sudo tee -a /etc/apt/sources.list > /dev/null
+#     echo "deb-src http://deb.debian.org/debian $dist_codename-backports main non-free-firmware" | sudo tee -a /etc/apt/sources.list > /dev/null
+#     echo "Backports repository entry added."
+# fi
 
 
 ################################################################################
 # 2 - APT - SOURCES.LIST - ADD CONTRIB AND NON-FREE ENTRIES
 ################################################################################
 
-# Create a new sources.list.tmp file to store the modified contents
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.tmp
+# # Create a new sources.list.tmp file to store the modified contents
+# sudo cp /etc/apt/sources.list /etc/apt/sources.list.tmp
 
-# Flag to track if modifications are made
-sources_list_modifications_made=false
+# # Flag to track if modifications are made
+# sources_list_modifications_made=false
 
-# Iterate over the lines in the original sources.list file
-while IFS= read -r line; do
+# # Iterate over the lines in the original sources.list file
+# while IFS= read -r line; do
 
-  # If the line starts with deb or deb-src
-  if [[ $line =~ ^deb.* ]]; then
+#   # If the line starts with deb or deb-src
+#   if [[ $line =~ ^deb.* ]]; then
 
-    # Check if contrib non-free is already in the line
-    if [[ ! $line =~ "contrib non-free" ]]; then
+#     # Check if contrib non-free is already in the line
+#     if [[ ! $line =~ "contrib non-free" ]]; then
 
-      # Add contrib non-free to the line
-      modified_line="$line contrib non-free"
+#       # Add contrib non-free to the line
+#       modified_line="$line contrib non-free"
 
-      # Replace the original line with the modified line in the temporary file
-      sudo sed -i "s|$line|$modified_line|" /etc/apt/sources.list.tmp
-      # Set the modifications flag to true
-      sources_list_modifications_made=true
-    fi
+#       # Replace the original line with the modified line in the temporary file
+#       sudo sed -i "s|$line|$modified_line|" /etc/apt/sources.list.tmp
+#       # Set the modifications flag to true
+#       sources_list_modifications_made=true
+#     fi
 
-  fi
+#   fi
 
-done < /etc/apt/sources.list
+# done < /etc/apt/sources.list
 
-if [ "$sources_list_modifications_made" = true ]; then
-  echo "'contrib non-free' entries added in /etc/apt/sources.list"
-  # Replace the original sources.list file with the modified temporary file
-  sudo mv /etc/apt/sources.list.tmp /etc/apt/sources.list
-else
-  sudo rm /etc/apt/sources.list.tmp
-fi
+# if [ "$sources_list_modifications_made" = true ]; then
+#   echo "'contrib non-free' entries added in /etc/apt/sources.list"
+#   # Replace the original sources.list file with the modified temporary file
+#   sudo mv /etc/apt/sources.list.tmp /etc/apt/sources.list
+# else
+#   sudo rm /etc/apt/sources.list.tmp
+# fi
 
 
 ################################################################################
@@ -156,18 +156,18 @@ fi
 
 echo "Install minimal Gnome Desktop"
 sudo apt update
-sudo apt -t $dist_codename-backports install gnome-shell gnome-console gnome-tweaks nautilus -y --quiet
+sudo apt install gnome-shell gnome-console gnome-tweaks nautilus -y --quiet
 sudo apt autoremove --purge gnome-shell-extension-prefs -y --quiet
 # don't need gnome-shell-extension-prefs as gnome-shell-extension-manager will be installed and performs the same stuff
 
 ################################################################################
 # 6 - INSTALL SOME TOOLS
 ################################################################################
-sudo apt -t $dist_codename-backports install curl git -y
+sudo apt install curl git -y
 
-sudo apt -t $dist_codename-backports install cups -y
+sudo apt install cups -y
 
-sudo apt -t $dist_codename-backports install python3-venv python3-pip -y --quiet
+sudo apt install python3-venv python3-pip -y
 
 ################################################################################
 # 7 -CUSTOMIZE BOOT
@@ -175,13 +175,13 @@ sudo apt -t $dist_codename-backports install python3-venv python3-pip -y --quiet
 echo "Customize Boot Splash"
 
 # install plymouth-theme and set theme to use OEM Bios Logo
-sudo apt -t $dist_codename-backports install plymouth-themes -y
+sudo apt install plymouth-themes -y
 sudo plymouth-set-default-theme -R bgrt
 echo "Plymouth splash has been changed."
 
 # Customize GRUB values
 NEW_GRUB_TIMEOUT=0  # Immediatly load the kernel
-NEW_GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0"  # Show plymouth theme
+NEW_GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0 amd_pstate=passive amd_pstate.shared_mem=1 initcall_blacklist=acpi_cpufreq_init"  # Show plymouth theme
 NEW_GRUB_BACKGROUND=""  # No background
 GRUB_PATH="/etc/default/grub"
 
@@ -196,10 +196,10 @@ sudo update-grub
 echo "GRUB settings have been changed."
 
 ################################################################################
-# 8 - ADD ZRAMSWAP AND DPHYS-SWAPFILE
+# 8 - ADD ZRAMSWAP
 ################################################################################
 echo "Install and configure swap spaces"
-sudo apt -t $dist_codename-backports install zram-tools dphys-swapfile -y --quiet
+sudo apt -t $dist_codename-backports install zram-tools -y
 
 # ZRAM - desired values
 ALGO="zstd"
@@ -211,27 +211,24 @@ sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
 sudo sed -i "s/#\s*PERCENT=.*/PERCENT=$PERCENT/" /etc/default/zramswap
 sudo sed -i "s/#\s*PRIORITY=.*/PRIORITY=$PRIORITY/" /etc/default/zramswap
 
-# DPHYS-SWAPFILE - configure
-sudo sed -i 's/#CONF_MAXSWAP=2048/CONF_MAXSWAP=/g' /etc/dphys-swapfile
+sysctl_values_to_add=(
+  "vm.page-cluster=0"
+  "vm.swappiness=180"
+  "vm.watermark_boost_factor=0"
+  "vm.watermark_scale_factor=125"
+)
 
-# Turn off the swap file
-sudo dphys-swapfile swapoff
-
-# Uninstall dphys-swapfile
-sudo dphys-swapfile uninstall
-
-# Set up dphys-swapfile with the default settings
-sudo dphys-swapfile setup
-
-# Turn on the swap file
-sudo dphys-swapfile swapon
+# Append values to sysctl.conf
+for value in "${sysctl_values_to_add[@]}"; do
+  echo "$value" | sudo tee -a /etc/sysctl.conf
+done
 
 ################################################################################
 # 9 - FLATPAK - ADD SOFTWARE STORE
 ################################################################################
 
 echo "Add flatpak support"
-sudo apt -t $dist_codename-backports install gnome-software-plugin-flatpak -y
+sudo apt install gnome-software-plugin-flatpak -y
 echo "Add FlatHub repository"
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 sudo flatpak update
@@ -246,13 +243,13 @@ flathub_applications_list=(
   "io.missioncenter.MissionCenter" # resource monitoring
   "org.gnome.Evince" # document viewer
   "org.gnome.Loupe" # image viewer
-  "org.gnome.Snapshot" # camera viewer
-  "org.gnome.Totem" # video player
-  "org.gnome.font-viewer" # font viewer
-  "org.gnome.seahorse.Application" # password and key handler
+#  "org.gnome.Snapshot" # camera viewer
+#  "org.gnome.Totem" # video player
+#  "org.gnome.font-viewer" # font viewer
+#  "org.gnome.seahorse.Application" # password and key handler
   "org.gnome.Firmware" # hardware firmware updater
-  "org.gnome.Boxes" # Virtual Machine
-  "org.gnome.Connections" # access with VNC and RDP
+#  "org.gnome.Boxes" # Virtual Machine
+#  "org.gnome.Connections" # access with VNC and RDP
 )
 
 # Iterate through the applications and install them
@@ -285,12 +282,12 @@ add_repository "onedrive" "https://download.opensuse.org/repositories/home:/npre
 add_repository "docker" "https://download.docker.com/linux/debian/gpg" "https://download.docker.com/linux/debian $dist_codename stable" "$(dpkg --print-architecture)"
 
 # Add Google Cloud SDK repository
-add_repository "google-cloud-sdk" "https://packages.cloud.google.com/apt/doc/apt-key.gpg" "https://packages.cloud.google.com/apt cloud-sdk main" "$(dpkg --print-architecture)"
+#add_repository "google-cloud-sdk" "https://packages.cloud.google.com/apt/doc/apt-key.gpg" "https://packages.cloud.google.com/apt cloud-sdk main" "$(dpkg --print-architecture)"
 
-# Add Steam repository
-add_repository "steam" "https://repo.steampowered.com/steam/archive/stable/steam.gpg" "https://repo.steampowered.com/steam/ stable steam" "amd64,i386"
+# # Add Steam repository
+# add_repository "steam" "https://repo.steampowered.com/steam/archive/stable/steam.gpg" "https://repo.steampowered.com/steam/ stable steam" "amd64,i386"
 
-sudo dpkg --add-architecture i386
+# sudo dpkg --add-architecture i386
 
 # update the apt list
 sudo apt update
@@ -313,7 +310,7 @@ declare -A deb_urls=(
     ["Google_Chrome"]="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
     ["Hyper_Terminal"]="https://releases.hyper.is/download/deb"
     ["Microsoft_Visual_Code"]="http://go.microsoft.com/fwlink/?LinkID=760868"
-    ["Valve_Steam"]="https://cdn.cloudflare.steamstatic.com/client/installer/steam.deb"
+    ["Valve_Steam"]="https://media.steampowered.com/client/installer/steam.deb"
     ["Docker_Desktop"]=$(get_latest_docker_url)
 )
 
@@ -331,17 +328,17 @@ rm -Rf ./temp_deb
 # 13 - SYSTEM - GET SOME EXTRA SOFTWARES
 ################################################################################
 
-sudo apt install \
-  libgl1-mesa-dri:amd64 \
-  libgl1-mesa-dri:i386 \
-  libgl1-mesa-glx:amd64 \
-  libgl1-mesa-glx:i386 \
-  steam-launcher \
-  -y
+# sudo apt install \
+#   libgl1-mesa-dri:amd64 \
+#   libgl1-mesa-dri:i386 \
+#   libgl1-mesa-glx:amd64 \
+#   libgl1-mesa-glx:i386 \
+#   steam-launcher \
+#   -y
 
-sudo apt install \
-  google-cloud-cli \
-  -y
+# sudo apt install \
+#   google-cloud-cli \
+#   -y
 
 sudo apt install \
   onedrive \
@@ -383,11 +380,11 @@ extension_uuid=(
 )
 
 for uuid in "${extension_uuid[@]}"; do
-  gnome-extension install "$uuid"
+  gnome-extension enable "$uuid"
 done
 
 ################################################################################
-# FONTS - INSTALL
+# 16 - FONTS WITH LIGATURE - INSTALL
 ################################################################################
 # URL of the GitHub releases page
 GITHUB_URL="https://github.com/ryanoasis/nerd-fonts/releases"
@@ -415,10 +412,12 @@ wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 unzip ./Firacode.zip -d FiraCode
 unzip ./VictorMonoAll.zip -d VictorMonoAll
 sudo mv Firacode /usr/share/fonts/truetype
-sudo mv TTF /usr/share/fonts/VictorMono
+sudo mv VictorMonoAll/TTF /usr/share/fonts/VictorMono
+rm -Rf FiraCode
+rm -Rf VictorMonoAll
 
 ################################################################################
-# Enable MGLRU kernel feature as a service
+# 17 - Enable MGLRU kernel feature as a service
 ################################################################################
 
 SERVICE_FILE_CONTENT="[Unit]
@@ -449,8 +448,63 @@ sudo systemctl enable mglru.service
 echo "mglru.service created and enabled."
 
 ################################################################################
-# APT - UPDATE SYSTEM WITH BACKPORTS PACKAGES
+# 18 - Get Latest Proton-GE relase and install it in steam folder
 ################################################################################
+# Define the GitHub repository and API URL
+REPO_URL="https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"
 
-sudo apt update -y
-sudo apt -t $dist_codename-backports full-upgrade -y
+# Fetch the latest release URL
+RELEASE_URL=$(curl -s $REPO_URL | grep -o "https://.*\.tar\.gz" | head -n 1)
+
+# Extract the release filename
+RELEASE_FILENAME=$(basename "$RELEASE_URL")
+
+# Create a temporary directory
+TEMP_DIR=$(mktemp -d)
+
+# Download the release
+curl -L -o "$TEMP_DIR/$RELEASE_FILENAME" "$RELEASE_URL"
+
+# Extract the release
+tar -xzvf "$TEMP_DIR/$RELEASE_FILENAME" -C "$TEMP_DIR"
+rm "$TEMP_DIR/$RELEASE_FILENAME"
+# Copy the uncompressed folder to the desired location
+cp -r "$TEMP_DIR/"* ~/.steam/root/compatibilitytools.d/
+
+# Clean up temporary files and directories
+rm -rf "$TEMP_DIR"
+
+echo "Latest release has been downloaded, extracted, and copied to ~/.steam/root/compatibilitytools.d/"
+
+################################################################################
+# 19 - Install MoreWaita and Bibata Amber Cursor
+################################################################################
+git clone https://github.com/somepaulo/MoreWaita.git
+cd MoreWaita
+sudo ./install.sh
+cd ..
+rm -Rf MoreWaita
+
+# Specify the version (update this to the latest version)
+version="2.0.4"
+download_url="https://github.com/ful1e5/Bibata_Cursor/releases/download/v${version}/Bibata-Modern-Amber.tar.xz"
+
+# Create a temporary directory for downloading and extracting the file
+temp_dir=$(mktemp -d)
+
+# Download the file
+echo "Downloading Bibata-Modern-Amber.tar.xz..."
+curl -sL -o "$temp_dir/Bibata-Modern-Amber.tar.xz" "$download_url"
+
+# Uncompress the file
+echo "Extracting Bibata-Modern-Amber.tar.xz..."
+tar -xJf "$temp_dir/Bibata-Modern-Amber.tar.xz" -C "$temp_dir"
+
+# Copy the folder to /usr/share/icons/
+echo "Copying Bibata-Modern-Amber to /usr/share/icons/..."
+sudo cp -r "$temp_dir/Bibata-Modern-Amber" /usr/share/icons/
+
+# Clean up the temporary directory
+rm -rf "$temp_dir"
+
+echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
