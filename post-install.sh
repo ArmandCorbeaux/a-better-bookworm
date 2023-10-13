@@ -508,3 +508,35 @@ sudo cp -r "$temp_dir/Bibata-Modern-Amber" /usr/share/icons/
 rm -rf "$temp_dir"
 
 echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
+
+
+################################################################################
+# 20 - move wifi informtions to NetworkManager
+################################################################################
+
+# Check if NetworkManager is installed
+if ! command -v nmcli &>/dev/null; then
+    echo "NetworkManager is not installed. Please install NetworkManager and try again."
+    exit 1
+fi
+
+# Read Wi-Fi information from /etc/network/interfaces
+ssid=$(grep -oP "(?<=wpa-ssid\s\")[^\"]+" /etc/network/interfaces)
+password=$(grep -oP "(?<=wpa-psk\s\")[^\"]+" /etc/network/interfaces)
+
+# Check if SSID and password are found
+if [[ -z "$ssid" || -z "$password" ]]; then
+    echo "Wi-Fi information not found in /etc/network/interfaces."
+    exit 1
+fi
+
+# Generate a random connection name
+connection_name="Wi-Fi-$(date +%s)"
+
+# Create a new NetworkManager connection profile
+sudo nmcli connection add type wifi con-name "$connection_name" ifname '*' ssid "$ssid" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$password"
+
+echo "Wi-Fi information moved to NetworkManager."
+echo "Connection profile name: $connection_name"
+
+sudo rm /etc/network/interfaces
