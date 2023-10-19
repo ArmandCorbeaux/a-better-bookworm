@@ -216,6 +216,7 @@ sysctl_values_to_add=(
   "vm.swappiness=180"
   "vm.watermark_boost_factor=0"
   "vm.watermark_scale_factor=125"
+  "vm.max_map_count = 2147483642"
 )
 
 # Append values to sysctl.conf
@@ -413,8 +414,8 @@ unzip ./Firacode.zip -d FiraCode
 unzip ./VictorMonoAll.zip -d VictorMonoAll
 sudo mv Firacode /usr/share/fonts/truetype
 sudo mv VictorMonoAll/TTF /usr/share/fonts/VictorMono
-rm -Rf FiraCode
-rm -Rf VictorMonoAll
+rm -Rf FiraCode*
+rm -Rf VictorMonoAll*
 
 ################################################################################
 # 17 - Enable MGLRU kernel feature as a service
@@ -510,7 +511,7 @@ echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
 
 
 ################################################################################
-# 20 - move wifi informtions to NetworkManager
+# 20 - move wifi informations to NetworkManager
 ################################################################################
 
 # Check if NetworkManager is installed
