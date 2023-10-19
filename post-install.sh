@@ -156,18 +156,19 @@ fi
 
 echo "Install minimal Gnome Desktop"
 sudo apt update
-sudo apt install gnome-shell gnome-console gnome-tweaks nautilus -y --quiet
-sudo apt autoremove --purge gnome-shell-extension-prefs -y --quiet
+sudo apt install gnome-shell gnome-console gnome-tweaks nautilus -y
+
 # don't need gnome-shell-extension-prefs as gnome-shell-extension-manager will be installed and performs the same stuff
+sudo apt autoremove --purge gnome-shell-extension-prefs -y
 
 ################################################################################
 # 6 - INSTALL SOME TOOLS
 ################################################################################
-sudo apt install curl git -y --quiet
+sudo apt install curl git -y
 
-sudo apt install cups -y --quiet
+sudo apt install cups -y
 
-sudo apt install python3-venv python3-pip -y --quiet
+sudo apt install python3-venv python3-pip -y
 
 ################################################################################
 # 7 -CUSTOMIZE BOOT
@@ -324,9 +325,7 @@ rm -Rf ./temp_deb
 # 13 - SYSTEM - GET ONEDRIVE
 ################################################################################
 
-sudo apt install \
-  onedrive \
-  -y --quiet
+sudo apt install onedrive -y
 
 ################################################################################
 # 14 - SYSTEM - ENABLE SERVICES
@@ -400,13 +399,13 @@ fi
 wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 
 # Now extract the fonts
-unzip ./Firacode.zip -d FiraCode
-unzip ./VictorMonoAll.zip -d VictorMonoAll
+unzip FiraCode.zip -d FiraCode
+unzip VictorMonoAll.zip -d VictorMonoAll
 mv VictorMonoAll/TTF VictorMonoAll/VictorMono
 sudo mv FiraCode /usr/share/fonts/truetype/
-sudo mv VictorMonoAll/VictorMono /usr/share/fonts/truetype/
+sudo mv VictorMono /usr/share/fonts/truetype/
 rm -Rf FiraCode*
-rm -Rf VictorMonoAll*
+rm -Rf VictorMono*
 
 sudo apt install fonts-noto-color-emoji -y --quiet
 
@@ -420,7 +419,7 @@ ConditionPathExists=/sys/kernel/mm/lru_gen/enabled
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c "echo 'y' > /sys/kernel/mm/lru_gen/enabled && echo '1000' > /sys/kernel/mm/lru_gen/min_ttl_ms"
+ExecStart=/bin/sh -c \"echo 'y' > /sys/kernel/mm/lru_gen/enabled && echo '1000' > /sys/kernel/mm/lru_gen/min_ttl_ms\"
 
 [Install]
 WantedBy=default.target
@@ -508,20 +507,3 @@ rm -rf "$temp_dir"
 
 echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
 
-################################################################################
-# 20 - move wifi informations to NetworkManager
-################################################################################
-
-# Get the list of Wi-Fi interfaces from /etc/network/interfaces
-interfaces=$(grep -v "^#" /etc/network/interfaces | egrep "iface.+wifi" | awk '{print $1}')
-
-# Create a NetworkManager connection for each interface
-for interface in $interfaces; do
-    # Get the SSID of the Wi-Fi network
-    ssid=$(awk -F\" '/^\s*ssid\s+/ {print $2}' /etc/network/interfaces | grep -v "^#")
-
-    # Create a NetworkManager connection for the Wi-Fi network
-    nmcli connection add type wifi con-name $interface ssid $ssid
-done
-
-sudo rm /etc/network/interfaces
