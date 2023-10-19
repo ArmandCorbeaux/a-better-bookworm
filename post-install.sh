@@ -181,7 +181,7 @@ echo "Plymouth splash has been changed."
 
 # Customize GRUB values
 NEW_GRUB_TIMEOUT=0  # Immediatly load the kernel
-NEW_GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0 amd_pstate=passive amd_pstate.shared_mem=1 initcall_blacklist=acpi_cpufreq_init"  # Show plymouth theme
+NEW_GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0 amd_pstate=passive amd_pstate.shared_mem=1"  # Show plymouth theme
 NEW_GRUB_BACKGROUND=""  # No background
 GRUB_PATH="/etc/default/grub"
 
@@ -189,8 +189,13 @@ GRUB_PATH="/etc/default/grub"
 sudo sed -i "s/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=$NEW_GRUB_TIMEOUT/" $GRUB_PATH
 # Change the GRUB_CMDLINE_LINUX_DEFAULT value
 sudo sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"$NEW_GRUB_CMDLINE_LINUX_DEFAULT\"/" $GRUB_PATH
-# Change the GRUB_BACKGROUND value
-sudo sed -i "s/GRUB_BACKGROUND=.*/GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"/" $GRUB_PATH
+
+# Change or add the GRUB_BACKGROUND value
+if grep -q "^GRUB_BACKGROUND=" $GRUB_PATH; then
+  sudo sed -i "s/GRUB_BACKGROUND=.*/GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"/" $GRUB_PATH
+else
+  echo "GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"" | sudo tee -a $GRUB_PATH
+fi
 
 sudo update-grub
 echo "GRUB settings have been changed."
@@ -244,13 +249,8 @@ flathub_applications_list=(
   "io.missioncenter.MissionCenter" # resource monitoring
   "org.gnome.Evince" # document viewer
   "org.gnome.Loupe" # image viewer
-#  "org.gnome.Snapshot" # camera viewer
-#  "org.gnome.Totem" # video player
-#  "org.gnome.font-viewer" # font viewer
-#  "org.gnome.seahorse.Application" # password and key handler
+  "org.gnome.font-viewer" # font viewer
   "org.gnome.Firmware" # hardware firmware updater
-#  "org.gnome.Boxes" # Virtual Machine
-#  "org.gnome.Connections" # access with VNC and RDP
 )
 
 # Iterate through the applications and install them
@@ -284,11 +284,6 @@ add_repository "docker" "https://download.docker.com/linux/debian/gpg" "https://
 
 # Add Google Cloud SDK repository
 #add_repository "google-cloud-sdk" "https://packages.cloud.google.com/apt/doc/apt-key.gpg" "https://packages.cloud.google.com/apt cloud-sdk main" "$(dpkg --print-architecture)"
-
-# # Add Steam repository
-# add_repository "steam" "https://repo.steampowered.com/steam/archive/stable/steam.gpg" "https://repo.steampowered.com/steam/ stable steam" "amd64,i386"
-
-# sudo dpkg --add-architecture i386
 
 # update the apt list
 sudo apt update
@@ -326,20 +321,8 @@ sudo apt install ./temp_deb/*.deb -y
 rm -Rf ./temp_deb
 
 ################################################################################
-# 13 - SYSTEM - GET SOME EXTRA SOFTWARES
+# 13 - SYSTEM - GET ONEDRIVE
 ################################################################################
-
-# sudo apt install \
-#   libgl1-mesa-dri:amd64 \
-#   libgl1-mesa-dri:i386 \
-#   libgl1-mesa-glx:amd64 \
-#   libgl1-mesa-glx:i386 \
-#   steam-launcher \
-#   -y
-
-# sudo apt install \
-#   google-cloud-cli \
-#   -y
 
 sudo apt install \
   onedrive \
@@ -350,6 +333,19 @@ sudo apt install \
 ################################################################################
 systemctl --user enable docker-desktop
 systemctl --user enable onedrive
+
+# hide docker-desktop icon
+file_path="/usr/share/applications/docker-desktop.desktop"
+new_line="NoDisplay=true"
+
+# Check if the file exists and is writable
+if [ -w "$file_path" ]; then
+    # Append the new line to the end of the file
+    echo "$new_line" | sudo tee -a "$file_path"
+    echo "Added \"$new_line\" to $file_path"
+else
+    echo "Error: The file $file_path does not exist or is not writable."
+fi
 
 ################################################################################
 # 15 - GNOME - INSTALL GNOME-SHELL EXTENSIONS
@@ -381,7 +377,7 @@ extension_uuid=(
 )
 
 for uuid in "${extension_uuid[@]}"; do
-  gnome-extension enable "$uuid"
+  gnome-extensions enable "$uuid"
 done
 
 ################################################################################
@@ -412,8 +408,8 @@ wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 # Now extract the fonts
 unzip ./Firacode.zip -d FiraCode
 unzip ./VictorMonoAll.zip -d VictorMonoAll
-sudo mv Firacode /usr/share/fonts/truetype
-sudo mv VictorMonoAll/TTF /usr/share/fonts/VictorMono
+sudo mv FiraCode /usr/share/fonts/truetype
+sudo mv VictorMonoAll/TTF /usr/share/fonts/truetype/VictorMono
 rm -Rf FiraCode*
 rm -Rf VictorMonoAll*
 
@@ -469,12 +465,13 @@ curl -L -o "$TEMP_DIR/$RELEASE_FILENAME" "$RELEASE_URL"
 tar -xzvf "$TEMP_DIR/$RELEASE_FILENAME" -C "$TEMP_DIR"
 rm "$TEMP_DIR/$RELEASE_FILENAME"
 # Copy the uncompressed folder to the desired location
-cp -r "$TEMP_DIR/"* ~/.steam/root/compatibilitytools.d/
-
+dir_path="$HOME/.local/share/Steam/compatibilitytools.d/"
+mkdir -p "$dir_path"
+cp -r "$TEMP_DIR/"* $dir_path
 # Clean up temporary files and directories
 rm -rf "$TEMP_DIR"
 
-echo "Latest release has been downloaded, extracted, and copied to ~/.steam/root/compatibilitytools.d/"
+echo "Latest release of Proton-GE has been installed."
 
 ################################################################################
 # 19 - Install MoreWaita and Bibata Amber Cursor
@@ -485,9 +482,14 @@ sudo ./install.sh
 cd ..
 rm -Rf MoreWaita
 
-# Specify the version (update this to the latest version)
-version="2.0.4"
-download_url="https://github.com/ful1e5/Bibata_Cursor/releases/download/v${version}/Bibata-Modern-Amber.tar.xz"
+# Fetch the latest release version from GitHub
+latest_version=$(curl -s "https://api.github.com/repos/ful1e5/Bibata_Cursor/releases/latest" | jq -r ".tag_name")
+if [ -z "$latest_version" ]; then
+    echo "Failed to retrieve the latest version from GitHub."
+    exit 1
+fi
+
+download_url="https://github.com/ful1e5/Bibata_Cursor/releases/download/${latest_version}/Bibata-Modern-Amber.tar.xz"
 
 # Create a temporary directory for downloading and extracting the file
 temp_dir=$(mktemp -d)
@@ -525,18 +527,21 @@ ssid=$(grep -oP "(?<=wpa-ssid\s\")[^\"]+" /etc/network/interfaces)
 password=$(grep -oP "(?<=wpa-psk\s\")[^\"]+" /etc/network/interfaces)
 
 # Check if SSID and password are found
-if [[ -z "$ssid" || -z "$password" ]]; then
+if [[ -n "$ssid" && -n "$password" ]]; then
+    # Generate a known connection name
+    connection_name="$ssid"
+
+    # Create a new NetworkManager connection profile
+    sudo nmcli connection add type wifi con-name "$connection_name" ifname '*' ssid "$ssid" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$password"
+
+    echo "Wi-Fi information moved to NetworkManager."
+    echo "Connection profile name: $connection_name"
+
+    # Remove the Wi-Fi configuration from /etc/network/interfaces
+    sudo sed -i '/wpa-ssid/d' /etc/network/interfaces
+    sudo sed -i '/wpa-psk/d' /etc/network/interfaces
+else
     echo "Wi-Fi information not found in /etc/network/interfaces."
     exit 1
 fi
 
-# Generate a random connection name
-connection_name="$ssid"
-
-# Create a new NetworkManager connection profile
-sudo nmcli connection add type wifi con-name "$connection_name" ifname '*' ssid "$ssid" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$password"
-
-echo "Wi-Fi information moved to NetworkManager."
-echo "Connection profile name: $connection_name"
-
-sudo rm /etc/network/interfaces
