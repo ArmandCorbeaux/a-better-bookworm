@@ -4,18 +4,25 @@
 
 The purpose is to provide a bash script which performs the various actions and optimizations after a minimal debian installation to provide an operating system.
 
+
+## Initial system
+You must create 2 partitions :
+- 1st has a 256MB size, and must be 'EFI' type
+- 2nd takes all the free space available, and must be 'btrfs' type
+
+As installed componants, you need only 'essential tools'.
+
 ## My objective :
 - Create a script to batch all these actions that actually I perform manually
 In a first time :
 - Fstab : add options on the right UUID for the btrfs partition
 - Gnome : perform minimal installation to have a functionnal desktop
-- Source repository : add contrib, non-free, and backports (for the kernel)
 - Software installation : get the latest deb from official webpage and install them, or install the latest repository, fetch and install.
-- PErform some post-installation operation : service launch and icon hide (sorry, but docker-desktop has a bug when you launch it from the shortcut when it's started)
+- Perform some post-installation operation : service launch and icon hide (docker-desktop has a bug when you launch it from the shortcut when it's started)
 - Install gnome-shell-extension-(...) to have a better shell experience
 - Flatpak : add repository, update the list and install applications
-- Customization : get files and install them
-- Steam: get latest proton-ge and install it in the right place
+- Customized cursor and enhanced icon pack : get files and install them
+- Steam: get latest proton-ge and install it
  
 ## My expained choices :
 
@@ -23,8 +30,7 @@ In a first time :
 
 **Gnome desktop :**
 - Simple, configurable and productive environment
-- I have always like their guidelines since the beginning of the project
-- I want to install **only the needed packages for a minimal but fully functionnal desktop environment**.
+- **only the needed packages for a minimal but fully functionnal desktop environment**.
 
 **Limited UI customization :**
 - **No themes :** it breaks the libadwaita light/dark desktop features
@@ -41,20 +47,17 @@ In a first time :
 - Zram creates a **swap space in memory**. And RAM has has quicker access than drive.
 - It performs **automatic data compression**. Zstd seems to be the best choice between CPU use and compression ratio.
 - In some point of view, ZRAM can be see as a process to perform RAM compression. And **virtually "expand" the available memory size** of the targetted computer.
-- I know that if I need some extra swap space which use the drive, I can use dphys-swapfile.
 
 **Use flatpak for some kind of applications rather than debian packages :**
 - Flatpak can be used by all kinds of desktop applications, and aims to be **as agnostic as possible** regarding how applications are built. There are **no requirements** regarding which programming languages, build tools, toolkits or frameworks can be used.
 - Desktop applications are **sandboxed**.
 - Having the **latest versions** of the installed applications.
-- **Expand the application store**.
 
 **Add some sources repositories for applications from major companies :**
 - Google Chrome, Microsoft Visual Studio Code, and Docker
 - They are **widely used** and **well supported**.
 - They are **in some way an "industry standard"**.
 - Repositories provide **sometimes supported more up-to-date packages for the OS**.
-- I don't think that "everything is bad in the world".
 
 **Have some specific fonts :**
 - I like the **"ligature support" feature**.
