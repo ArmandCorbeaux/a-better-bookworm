@@ -339,13 +339,7 @@ file_path="/usr/share/applications/docker-desktop.desktop"
 new_line="NoDisplay=true"
 
 # Check if the file exists and is writable
-if [ -w "$file_path" ]; then
-    # Append the new line to the end of the file
-    echo "$new_line" | sudo tee -a "$file_path"
-    echo "Added \"$new_line\" to $file_path"
-else
-    echo "Error: The file $file_path does not exist or is not writable."
-fi
+echo "$new_line" | sudo tee -a "$file_path"
 
 ################################################################################
 # 15 - GNOME - INSTALL GNOME-SHELL EXTENSIONS
@@ -353,7 +347,7 @@ fi
 
 # gnome-shell-extension URLs
 extension_urls=(
-  "https://extensions.gnome.org/extension-data/tiling-assistantleleat-on-github.v43.shell-extension.zip"
+  "https://extensions.gnome.org/extension-data/tiling-assistantleleat-on-github.v45.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/onedrivediegomerida.com.v11.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v84.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/BingWallpaperineffable-gmail.com.v45.shell-extension.zip"
@@ -408,9 +402,9 @@ wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 # Now extract the fonts
 unzip ./Firacode.zip -d FiraCode
 unzip ./VictorMonoAll.zip -d VictorMonoAll
-sudo mv FiraCode /usr/share/fonts/truetype
-sudo mv VictorMonoAll/TTF VictorMonoAll/victorMono
-sudo mv VictorMonoAll/VictorMono /usr/share/fonts/truetype
+mv VictorMonoAll/TTF VictorMonoAll/VictorMono
+sudo mv FiraCode /usr/share/fonts/truetype/
+sudo mv VictorMonoAll/VictorMono /usr/share/fonts/truetype/
 rm -Rf FiraCode*
 rm -Rf VictorMonoAll*
 
@@ -518,31 +512,16 @@ echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
 # 20 - move wifi informations to NetworkManager
 ################################################################################
 
-# Check if NetworkManager is installed
-if ! command -v nmcli &>/dev/null; then
-    echo "NetworkManager is not installed. Please install NetworkManager and try again."
-    exit 1
-fi
+# Get the list of Wi-Fi interfaces from /etc/network/interfaces
+interfaces=$(grep -v "^#" /etc/network/interfaces | egrep "iface.+wifi" | awk '{print $1}')
 
-# Read Wi-Fi information from /etc/network/interfaces
-ssid=$(grep -oP "(?<=wpa-ssid\s\")[^\"]+" /etc/network/interfaces)
-password=$(grep -oP "(?<=wpa-psk\s\")[^\"]+" /etc/network/interfaces)
+# Create a NetworkManager connection for each interface
+for interface in $interfaces; do
+    # Get the SSID of the Wi-Fi network
+    ssid=$(awk -F\" '/^\s*ssid\s+/ {print $2}' /etc/network/interfaces | grep -v "^#")
 
-# Check if SSID and password are found
-if [[ -n "$ssid" && -n "$password" ]]; then
-    # Generate a known connection name
-    connection_name="$ssid"
+    # Create a NetworkManager connection for the Wi-Fi network
+    nmcli connection add type wifi con-name $interface ssid $ssid
+done
 
-    # Create a new NetworkManager connection profile
-    sudo nmcli connection add type wifi con-name "$connection_name" ifname '*' ssid "$ssid" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$password"
-
-    echo "Wi-Fi information moved to NetworkManager."
-    echo "Connection profile name: $connection_name"
-
-    # Remove the Wi-Fi configuration from /etc/network/interfaces
-    sudo sed -i '/wpa-ssid/d' /etc/network/interfaces
-    sudo sed -i '/wpa-psk/d' /etc/network/interfaces
-else
-    echo "Wi-Fi information not found in /etc/network/interfaces."
-    exit 1
-fi
+sudo rm /etc/network/interfaces
