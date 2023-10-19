@@ -426,8 +426,7 @@ ConditionPathExists=/sys/kernel/mm/lru_gen/enabled
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c \"/bin/echo y > /sys/kernel/mm/lru_gen/enabled\"
-ExecStartPost=/bin/bash -c \"/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms\"
+ExecStart=/bin/sh -c "echo 'y' > /sys/kernel/mm/lru_gen/enabled && echo '1000' > /sys/kernel/mm/lru_gen/min_ttl_ms"
 
 [Install]
 WantedBy=default.target
@@ -441,9 +440,9 @@ echo "$SERVICE_FILE_CONTENT" | sudo tee "$SERVICE_FILE_PATH" > /dev/null
 # Reload systemd to recognize the new service
 sudo systemctl daemon-reload
 
-# Start and enable the mglru service
-sudo systemctl start mglru.service
+# Enable and start the mglru service
 sudo systemctl enable mglru.service
+sudo systemctl start mglru.service
 
 echo "mglru.service created and enabled."
 
