@@ -163,11 +163,11 @@ sudo apt autoremove --purge gnome-shell-extension-prefs -y --quiet
 ################################################################################
 # 6 - INSTALL SOME TOOLS
 ################################################################################
-sudo apt install curl git -y
+sudo apt install curl git -y --quiet
 
-sudo apt install cups -y
+sudo apt install cups -y --quiet
 
-sudo apt install python3-venv python3-pip -y
+sudo apt install python3-venv python3-pip -y --quiet
 
 ################################################################################
 # 7 -CUSTOMIZE BOOT
@@ -175,7 +175,7 @@ sudo apt install python3-venv python3-pip -y
 echo "Customize Boot Splash"
 
 # install plymouth-theme and set theme to use OEM Bios Logo
-sudo apt install plymouth-themes -y
+sudo apt install plymouth-themes -y --quiet
 sudo plymouth-set-default-theme -R bgrt
 echo "Plymouth splash has been changed."
 
@@ -197,14 +197,14 @@ else
   echo "GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"" | sudo tee -a $GRUB_PATH
 fi
 
-sudo update-grub
 echo "GRUB settings have been changed."
+sudo update-grub
 
 ################################################################################
 # 8 - ADD ZRAMSWAP
 ################################################################################
 echo "Install and configure swap spaces"
-sudo apt -t $dist_codename-backports install zram-tools -y
+sudo apt install zram-tools -y --quiet
 
 # ZRAM - desired values
 ALGO="zstd"
@@ -326,7 +326,7 @@ rm -Rf ./temp_deb
 
 sudo apt install \
   onedrive \
-  -y
+  -y --quiet
 
 ################################################################################
 # 14 - SYSTEM - ENABLE SERVICES
@@ -409,9 +409,12 @@ wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 unzip ./Firacode.zip -d FiraCode
 unzip ./VictorMonoAll.zip -d VictorMonoAll
 sudo mv FiraCode /usr/share/fonts/truetype
-sudo mv VictorMonoAll/TTF /usr/share/fonts/truetype/VictorMono
+sudo mv VictorMonoAll/TTF VictorMonoAll/victorMono
+sudo mv VictorMonoAll/VictorMono /usr/share/fonts/truetype
 rm -Rf FiraCode*
 rm -Rf VictorMonoAll*
+
+sudo apt install fonts-noto-color-emoji -y --quiet
 
 ################################################################################
 # 17 - Enable MGLRU kernel feature as a service
@@ -511,7 +514,6 @@ rm -rf "$temp_dir"
 
 echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
 
-
 ################################################################################
 # 20 - move wifi informations to NetworkManager
 ################################################################################
@@ -544,4 +546,3 @@ else
     echo "Wi-Fi information not found in /etc/network/interfaces."
     exit 1
 fi
-
