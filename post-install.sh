@@ -209,7 +209,7 @@ sudo apt install zram-tools -y --quiet
 
 # ZRAM - desired values
 ALGO="zstd"
-PERCENT=100
+PERCENT=4zram00
 PRIORITY=100
 
 # ZRAM - uncomment and modify the values
