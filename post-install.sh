@@ -246,7 +246,7 @@ sudo flatpak update
 # List of Flatpak applications to install
 flathub_applications_list=(
   "com.mattjakeman.ExtensionManager" # gnome-shell-extension-manager
-  "io.github.realmazharhussain.GdmSettings" # personalize GDM settings
+#  "io.github.realmazharhussain.GdmSettings" # personalize GDM settings
   "io.missioncenter.MissionCenter" # resource monitoring
   "org.gnome.Evince" # document viewer
   "org.gnome.Loupe" # image viewer
@@ -349,7 +349,24 @@ extension_urls=(
   "https://extensions.gnome.org/extension-data/tiling-assistantleleat-on-github.v45.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/onedrivediegomerida.com.v11.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v84.shell-extension.zip"
-  "https://extensions.gnome.org/extension-data/BingWallpaperineffable-gmail.com.v45.shell-extension.zip"
+  "https://extensions.gnome.org/extension-data/BingWallpaper# Lines to add
+new_lines="[org/gnome/desktop/interface]
+cursor-theme='Bibata-Moern-Amber'
+icon-theme='MoreWaita'
+document-font-theme='Candarell 11'
+font-theme='Candarell 11'"
+
+# File to edit
+file_path="/etc/gdm3/greeter.dconf-defaults"
+
+# Check if the file exists
+if [ -e "$file_path" ]; then
+  # Use sed to add the lines to the specified section
+  sed -i "/\[org\/gnome\/desktop\/interface\]/,/\[/c\\$new_lines" "$file_path"
+  echo "Lines added to $file_path"
+else
+  echo "File not found: $file_path"
+fiineffable-gmail.com.v45.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/caffeinepatapon.info.v51.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/appindicatorsupportrgcjonas.gmail.com.v53.shell-extension.zip"
 )
@@ -506,6 +523,54 @@ sudo cp -r "$temp_dir/Bibata-Modern-Amber" /usr/share/icons/
 rm -rf "$temp_dir"
 
 echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
+gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Amber'
+gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
+gsettings set org.gnome.desktop.interface clock-show-seconds 'true'
+gsettings set org.gnome.desktop.interface clock-show-weekday 'true'
+gsettings set org.gnome.desktop.interface enable-hot-corners 'false'
+gsettings set org.gnome.desktop.interface font-antialiasing 'grayscale'
+gsettings set org.gnome.desktop.interface font-hinting 'slight'
+gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click 'true'
+gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled 'true'
+gsettings set org.gnome.desktop.peripherals.mouse natural-scroll 'true'
+gsettings set org.gnome.desktop.peripherals.keyboard numlock-state 'true'
+gsettings set org.gnome.desktop.datetime automatic-timezone 'true'
+gsettings set org.gnome.desktop.calendar show-weekdate 'true'
+gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar 'none'
+gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+gsettings set org.gnome.mutter center-new-windows 'true'
+gsettings set org.gnome.mutter edge-tiling 'true'
+gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
+gsettings set org.gnome.nautilus.preferences show-hidden-files 'true'
+gsettings set org.gnome.shell.weather automatic-location 'true'
+gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys 'false'
+gsettings set org.gnome.shell.extensions.dash-to-dock intellihide-mode 'ALL_WINDOWS'
+gsettings set org.gnome.shell.extensions.dash-to-dock running-indicator-style 'SQUARES'
+gsettings set org.gnome.system.location enabled 'true'
+
+# customize GDM3 settings to match gnome desktop theme
+echo "customize GDM3 login interface"
+
+# Lines to add
+new_lines="[org/gnome/desktop/interface]
+cursor-theme='Bibata-Modern-Amber'
+icon-theme='MoreWaita'
+document-font-theme='Candarell 11'
+font-theme='Candarell 11'"
+
+# File to edit
+file_path="/etc/gdm3/greeter.dconf-defaults"
+
+# Check if the file exists
+if [ -e "$file_path" ]; then
+  # Use sed to add the lines to the specified section
+  sed -i "/\[org\/gnome\/desktop\/interface\]/,/\[/c\\$new_lines" "$file_path"
+  echo "Lines added to $file_path"
+else
+  echo "File not found: $file_path"
+fi
+sudo dpkg-reconfigure gdm3
+
 
 #################################################################################
 # 20 - Migrate Wi-Fi connection from ifupdown to NetworkManager
