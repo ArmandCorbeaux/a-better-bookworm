@@ -523,6 +523,10 @@ sudo cp -r "$temp_dir/Bibata-Modern-Amber" /usr/share/icons/
 rm -rf "$temp_dir"
 
 echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
+
+# Some custom Gnome settings which modify the desktop environment
+gsettings set org.gnome.desktop.calendar show-weekdate 'true'
+gsettings set org.gnome.desktop.datetime automatic-timezone 'true'
 gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Amber'
 gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
 gsettings set org.gnome.desktop.interface clock-show-seconds 'true'
@@ -534,8 +538,6 @@ gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click 'true'
 gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled 'true'
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll 'true'
 gsettings set org.gnome.desktop.peripherals.keyboard numlock-state 'true'
-gsettings set org.gnome.desktop.datetime automatic-timezone 'true'
-gsettings set org.gnome.desktop.calendar show-weekdate 'true'
 gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar 'none'
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 gsettings set org.gnome.mutter center-new-windows 'true'
@@ -543,10 +545,12 @@ gsettings set org.gnome.mutter edge-tiling 'true'
 gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
 gsettings set org.gnome.nautilus.preferences show-hidden-files 'true'
 gsettings set org.gnome.shell.weather automatic-location 'true'
-gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys 'false'
-gsettings set org.gnome.shell.extensions.dash-to-dock intellihide-mode 'ALL_WINDOWS'
-gsettings set org.gnome.shell.extensions.dash-to-dock running-indicator-style 'SQUARES'
 gsettings set org.gnome.system.location enabled 'true'
+
+# Some custom Gnome extensions settings which modify the desktop environment
+dconf write /org/gnome/shell/extensions/dash-to-dock/hot-keys false
+dconf write /org/gnome/shell/extensions/dash-to-dock/intellihide-mode 'ALL_WINDOWS'
+dconf write /org/gnome/shell/extensions/dash-to-dock/running-indicator-style 'SQUARES'
 
 # customize GDM3 settings to match gnome desktop theme
 echo "customize GDM3 login interface"
@@ -556,7 +560,11 @@ new_lines="[org/gnome/desktop/interface]
 cursor-theme='Bibata-Modern-Amber'
 icon-theme='MoreWaita'
 document-font-theme='Candarell 11'
-font-theme='Candarell 11'"
+font-theme='Candarell 11'
+clock-show-seconds='true'
+clock-show-weekday='true'
+font-antialiasing='grayscale'
+font-hinting='slight'"
 
 # File to edit
 file_path="/etc/gdm3/greeter.dconf-defaults"
