@@ -349,24 +349,7 @@ extension_urls=(
   "https://extensions.gnome.org/extension-data/tiling-assistantleleat-on-github.v45.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/onedrivediegomerida.com.v11.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v84.shell-extension.zip"
-  "https://extensions.gnome.org/extension-data/BingWallpaper# Lines to add
-new_lines="[org/gnome/desktop/interface]
-cursor-theme='Bibata-Moern-Amber'
-icon-theme='MoreWaita'
-document-font-theme='Candarell 11'
-font-theme='Candarell 11'"
-
-# File to edit
-file_path="/etc/gdm3/greeter.dconf-defaults"
-
-# Check if the file exists
-if [ -e "$file_path" ]; then
-  # Use sed to add the lines to the specified section
-  sed -i "/\[org\/gnome\/desktop\/interface\]/,/\[/c\\$new_lines" "$file_path"
-  echo "Lines added to $file_path"
-else
-  echo "File not found: $file_path"
-fiineffable-gmail.com.v45.shell-extension.zip"
+  "https://extensions.gnome.org/extension-data/BingWallpaperineffable-gmail.com.v45.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/caffeinepatapon.info.v51.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/appindicatorsupportrgcjonas.gmail.com.v53.shell-extension.zip"
 )
@@ -390,8 +373,11 @@ for uuid in "${extension_uuid[@]}"; do
   gnome-extensions enable "$uuid"
 done
 
+# librabry needed to access Bing Wallpaper exntension's settings
+sudo apt install gir1.2-soup-2.4 -y
+
 ################################################################################
-# 16 - FONTS WITH LIGATURE - INSTALL
+# 16 - FONTS WITH LIGATURE SUPPORT - INSTALL
 ################################################################################
 # URL of the GitHub releases page
 GITHUB_URL="https://github.com/ryanoasis/nerd-fonts/releases"
@@ -525,27 +511,34 @@ rm -rf "$temp_dir"
 echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
 
 # Some custom Gnome settings which modify the desktop environment
-gsettings set org.gnome.desktop.calendar show-weekdate 'true'
-gsettings set org.gnome.desktop.datetime automatic-timezone 'true'
-gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Amber'
-gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
-gsettings set org.gnome.desktop.interface clock-show-seconds 'true'
-gsettings set org.gnome.desktop.interface clock-show-weekday 'true'
-gsettings set org.gnome.desktop.interface enable-hot-corners 'false'
-gsettings set org.gnome.desktop.interface font-antialiasing 'grayscale'
-gsettings set org.gnome.desktop.interface font-hinting 'slight'
-gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click 'true'
-gsettings set org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled 'true'
-gsettings set org.gnome.desktop.peripherals.mouse natural-scroll 'true'
-gsettings set org.gnome.desktop.peripherals.keyboard numlock-state 'true'
-gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar 'none'
-gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
-gsettings set org.gnome.mutter center-new-windows 'true'
-gsettings set org.gnome.mutter edge-tiling 'true'
-gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
-gsettings set org.gnome.nautilus.preferences show-hidden-files 'true'
-gsettings set org.gnome.shell.weather automatic-location 'true'
-gsettings set org.gnome.system.location enabled 'true'
+settings=(
+  "org.gnome.desktop.calendar show-weekdate true"
+  "org.gnome.desktop.datetime automatic-timezone true"
+  "org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Amber'"
+  "org.gnome.desktop.interface icon-theme 'MoreWaita'"
+  "org.gnome.desktop.interface clock-show-seconds true"
+  "org.gnome.desktop.interface clock-show-weekday true"
+  "org.gnome.desktop.interface enable-hot-corners false"
+  "org.gnome.desktop.interface font-antialiasing 'grayscale'"
+  "org.gnome.desktop.interface font-hinting 'slight'"
+  "org.gnome.desktop.peripherals.touchpad tap-to-click true"
+  "org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled true"
+  "org.gnome.desktop.peripherals.mouse natural-scroll true"
+  "org.gnome.desktop.peripherals.keyboard numlock-state true"
+  "org.gnome.desktop.wm.preferences action-double-click-titlebar none"
+  "org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'"
+  "org.gnome.mutter center-new-windows true"
+  "org.gnome.mutter edge-tiling true"
+  "org.gnome.nautilus.icon-view default-zoom-level small"
+  "org.gnome.nautilus.preferences show-hidden-files true"
+  "org.gnome.shell.weather automatic-location true"
+  "org.gnome.system.location enabled true"
+)
+
+# Loop through the settings and apply them using gsettings
+for setting in "${settings[@]}"; do
+  gsettings set $setting
+done
 
 # Some custom Gnome extensions settings which modify the desktop environment
 dconf write /org/gnome/shell/extensions/dash-to-dock/hot-keys false
@@ -561,8 +554,8 @@ cursor-theme='Bibata-Modern-Amber'
 icon-theme='MoreWaita'
 document-font-theme='Candarell 11'
 font-theme='Candarell 11'
-clock-show-seconds='true'
-clock-show-weekday='true'
+clock-show-seconds=true
+clock-show-weekday=true
 font-antialiasing='grayscale'
 font-hinting='slight'"
 
@@ -577,6 +570,20 @@ if [ -e "$file_path" ]; then
 else
   echo "File not found: $file_path"
 fi
+
+# Disable accessibility icon in gdm
+
+# Define the configuration file and the section/key to change
+config_file="/usr/share/gdm/dconf/00-upstream-setting"
+section="[org/gnome/desktop/a11y]"
+key="always-show-universal-access-status"
+
+# Define the new value to set
+new_value="false"
+
+# Use sed to replace the existing value
+sed -i "/^\[$section\]/,/^\[/{s/$key=.*/$key=$new_value/}" "$config_file"
+
 sudo dpkg-reconfigure gdm3
 
 
@@ -629,6 +636,16 @@ fi
 
 sudo rm /etc/network/interfaces.backup
 echo "Switched from ifupdown to NetworkManager for $wifi_interface."
+
+############
+# Improve support of wayland for Google Chrome
+############
+
+# Get the path to the `/etc/environment` file.
+environment_file="/etc/environment"
+
+# Add the Google Chrome Wayland and PipeWire flags to the `/etc/environment` file.
+echo "CHROME_FLAGS=\"--ozone-platform=wayland --enable-features=UsePipeWire --enable-features=Vulkan  --enable-features=UseFuchsiaDirectComposition --enable-features=UseWaylandEGLPlatform\"" >> ${environment_file}
 
 rm ./post-install.sh
 echo "System can be reboot"
