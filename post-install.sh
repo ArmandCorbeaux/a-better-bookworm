@@ -33,7 +33,7 @@ fi
 
 
 ################################################################################
-# 1- APT - SOURCES.LIST - ADD BACKPORTS REPOSITORY
+# 1 - APT - SOURCES.LIST - ADD BACKPORTS REPOSITORY
 ################################################################################
 
 # # Check if backports entry already exists in sources.list
@@ -130,8 +130,8 @@ fstab_modifications_made=false
 # Check each line in /etc/fstab
 while IFS= read -r line; do
   if [[ "$line" == *"btrfs"* ]] && [[ "$line" == *"defaults"* ]]; then
-    # Replace 'defaults' with 'ssd,discard=async,autodefrag,compress=zstd'
-    updated_line=$(echo "$line" | sed 's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime/')
+    # Replace 'defaults' with 'ssd,discard=async,autodefrag,compress=zstd,commit=120'
+    updated_line=$(echo "$line" | sed 's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime,commit=120/')
     echo "Replacing line: $line"
     echo "With: $updated_line"
 
@@ -176,7 +176,7 @@ sudo apt install python3-venv python3-pip -y
 echo "Customize Boot Splash"
 
 # install plymouth-theme and set theme to use OEM Bios Logo
-sudo apt install plymouth-themes -y --quiet
+sudo apt install plymouth-themes -y
 sudo plymouth-set-default-theme -R bgrt
 echo "Plymouth splash has been changed."
 
@@ -209,8 +209,8 @@ sudo apt install zram-tools -y --quiet
 
 # ZRAM - desired values
 ALGO="zstd"
-PERCENT=4zram00
-PRIORITY=100
+PERCENT=400
+PRIORITY=190
 
 # ZRAM - uncomment and modify the values
 sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
