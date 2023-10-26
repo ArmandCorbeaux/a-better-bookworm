@@ -73,7 +73,7 @@ fi
 #       modified_line="$line contrib non-free"
 
 #       # Replace the original line with the modified line in the temporary file
-#       sudo  -i "s|$line|$modified_line|" /etc/apt/sources.list.tmp
+#       sudo sed -i "s|$line|$modified_line|" /etc/apt/sources.list.tmp
 #       # Set the modifications flag to true
 #       sources_list_modifications_made=true
 #     fi
@@ -152,7 +152,7 @@ while IFS= read -r line; do
 
     # Use sudo to update the file
     
-    sudo  -i "s|$line|$updated_line|" /etc/fstab
+    sudo sed -i "s|$line|$updated_line|" /etc/fstab
 
     # Set changes_made to true
     
@@ -211,14 +211,14 @@ NEW_GRUB_BACKGROUND=""  # No background
 GRUB_PATH="/etc/default/grub"
 
 # Change the GRUB_TIMEOUT value
-sudo  -i "s/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=$NEW_GRUB_TIMEOUT/" $GRUB_PATH
+sudo sed -i "s/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=$NEW_GRUB_TIMEOUT/" $GRUB_PATH
 
 # Change the GRUB_CMDLINE_LINUX_DEFAULT value
-sudo  -i "s/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"$NEW_GRUB_CMDLINE_LINUX_DEFAULT\"/" $GRUB_PATH
+sudo sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"$NEW_GRUB_CMDLINE_LINUX_DEFAULT\"/" $GRUB_PATH
 
 # Change or add the GRUB_BACKGROUND value
 if grep -q "^GRUB_BACKGROUND=" $GRUB_PATH; then
-  sudo  -i "s/GRUB_BACKGROUND=.*/GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"/" $GRUB_PATH
+  sudo sed -i "s/GRUB_BACKGROUND=.*/GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"/" $GRUB_PATH
 else
   echo "GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"" | sudo tee -a $GRUB_PATH
 fi
@@ -240,9 +240,9 @@ PERCENT=400
 PRIORITY=180
 
 # ZRAM - uncomment and modify the values
-sudo  -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
-sudo  -i "s/#\s*PERCENT=.*/PERCENT=$PERCENT/" /etc/default/zramswap
-sudo  -i "s/#\s*PRIORITY=.*/PRIORITY=$PRIORITY/" /etc/default/zramswap
+sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
+sudo sed -i "s/#\s*PERCENT=.*/PERCENT=$PERCENT/" /etc/default/zramswap
+sudo sed -i "s/#\s*PRIORITY=.*/PRIORITY=$PRIORITY/" /etc/default/zramswap
 
 sysctl_values_to_add=(
   "vm.page-cluster=0"
@@ -452,7 +452,7 @@ rm -Rf FiraCode*
 rm -Rf VictorMono*
 
 # Add an emoji font
-sudo apt install fonts-noto-color-emoji -y --quiet
+sudo apt install fonts-noto-color-emoji -y
 
 ################################################################################
 # 17 - Enable MGLRU kernel feature as a service
@@ -616,7 +616,6 @@ echo "$new_lines" | sudo cat - "$file_path" > temp_file && sudo mv temp_file "$f
 
 # Disable accessibility icon in gdm
 
-# Define the configuration file and the section/key to change
 # Define the configuration file and the section/key to change
 config_file="/usr/share/gdm/dconf/00-upstream-settings"
 section="[org/gnome/desktop/a11y]"
