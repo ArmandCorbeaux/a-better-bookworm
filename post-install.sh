@@ -614,7 +614,7 @@ file_path="/etc/gdm3/greeter.dconf-defaults"
 # Check if the file exists
 if [ -e "$file_path" ]; then
   # Use sed to add the lines to the specified section
-  sed -i "/\[org\/gnome\/desktop\/interface\]/,/\[/c\\$new_lines" "$file_path"
+  sudo sed -i "/\[org\/gnome\/desktop\/interface\]/,/\[/c\\$new_lines" "$file_path"
   echo "Lines added to $file_path"
 else
   echo "File not found: $file_path"
@@ -631,7 +631,7 @@ key="always-show-universal-access-status"
 new_value="false"
 
 # Use sed to replace the existing value
-sed -i "/^\[$section\]/,/^\[/{s/$key=.*/$key=$new_value/}" "$config_file"
+sudo sed -i "/^\[$section\]/,/^\[/{s/$key=.*/$key=$new_value/}" "$config_file"
 
 sudo dpkg-reconfigure gdm3
 
