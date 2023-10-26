@@ -443,7 +443,7 @@ unzip FiraCode.zip -d FiraCode
 unzip VictorMonoAll.zip -d VictorMonoAll
 
 # Move the fonts in the right place
-mv VictorMonoAll/TTF VictorMonoAll/VictorMono
+mv VictorMonoAll/TTF VictorMono
 sudo mv FiraCode /usr/share/fonts/truetype/
 sudo mv VictorMono /usr/share/fonts/truetype/
 
@@ -591,8 +591,8 @@ done
 
 # Some custom Gnome extensions settings which modify the use of the desktop environment
 dconf write /org/gnome/shell/extensions/dash-to-dock/hot-keys false
-dconf write /org/gnome/shell/extensions/dash-to-dock/intellihide-mode 'ALL_WINDOWS'
-dconf write /org/gnome/shell/extensions/dash-to-dock/running-indicator-style 'SQUARES'
+dconf write /org/gnome/shell/extensions/dash-to-dock/intellihide-mode "['ALL_WINDOWS']"
+dconf write /org/gnome/shell/extensions/dash-to-dock/running-indicator-style "['SQUARES']"
 
 # customize GDM3 settings to match gnome desktop theme
 echo "customize GDM3 login interface"
@@ -623,7 +623,7 @@ fi
 # Disable accessibility icon in gdm
 
 # Define the configuration file and the section/key to change
-config_file="/usr/share/gdm/dconf/00-upstream-setting"
+config_file="/usr/share/gdm/dconf/00-upstream-settings"
 section="[org/gnome/desktop/a11y]"
 key="always-show-universal-access-status"
 
@@ -686,15 +686,15 @@ fi
 sudo rm /etc/network/interfaces.backup
 echo "Switched from ifupdown to NetworkManager for $wifi_interface."
 
-############
-# Improve support of Wayland for Google Chrome
-############
+#################################################################################
+# 21 - Improve support of Wayland for Google Chrome
+#################################################################################
 
 # Get the path to the `/etc/environment` file.
 environment_file="/etc/environment"
 
 # Add the Google Chrome Wayland and PipeWire flags to the `/etc/environment` file.
-echo "CHROME_FLAGS=\"--ozone-platform=wayland --enable-features=UsePipeWire --enable-features=Vulkan  --enable-features=UseFuchsiaDirectComposition --enable-features=UseWaylandEGLPlatform\"" >> ${environment_file}
+echo "CHROME_FLAGS=\"--ozone-platform=wayland --enable-features=UsePipeWire --enable-features=Vulkan  --enable-features=UseFuchsiaDirectComposition --enable-features=UseWaylandEGLPlatform\"" | sudo tee -a ${environment_file}
 
 rm ./post-install.sh
 echo "System can be reboot"
