@@ -146,7 +146,7 @@ while IFS= read -r line; do
 
     # Replace 'defaults' with 'ssd,discard=async,autodefrag,compress=zstd,commit=120'
     
-    updated_line=$(echo "$line" |  's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime,commit=120/')
+    updated_line=$(echo "$line" | sed 's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime,commit=120/')
     echo "Replacing line: $line"
     echo "With: $updated_line"
 
