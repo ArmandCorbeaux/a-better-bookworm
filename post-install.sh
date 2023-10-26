@@ -20,12 +20,14 @@ if [[ "$dist_name" != "Debian" ]] || [[ "$dist_version" != "12" ]]; then
 fi
 
 # Check if the user has sudo privileges
+
 if ! sudo -v; then
     echo "This script requires sudo privileges. Exiting."
     exit 1
 fi
 
 # Check if running as root
+
 if [[ $EUID -eq 0 ]]; then
     echo "This script should not be run as root. Please run it as a regular user with sudo."
     exit 1
@@ -94,14 +96,20 @@ fi
 ################################################################################
 
 # Temp file to store modified lines
+
 temp_file=$(mktemp)
 sources_list_modifications_made=false
 
 # Read the sources.list file line by line
+
 while IFS= read -r line; do
+  
   # If the line starts with deb-src
+  
   if [[ $line =~ ^deb-src.* ]]; then
+  
     # Add # to the beginning of the line
+  
     echo "#$line" >> "$temp_file"
     sources_list_modifications_made=true
   else
@@ -110,8 +118,11 @@ while IFS= read -r line; do
 done < "/etc/apt/sources.list"
 
 if [ "$sources_list_modifications_made" = true ]; then
+
   # Replace the original file with the modified content
+  
   sudo mv "$temp_file" "/etc/apt/sources.list"
+  
   echo "deb-src lines have been disabled in the sources.list file."
 else
   # No changes were made
@@ -125,25 +136,32 @@ fi
 ################################################################################
 
 # Variable to track if changes were made
+
 fstab_modifications_made=false
 
 # Check each line in /etc/fstab
+
 while IFS= read -r line; do
   if [[ "$line" == *"btrfs"* ]] && [[ "$line" == *"defaults"* ]]; then
+
     # Replace 'defaults' with 'ssd,discard=async,autodefrag,compress=zstd,commit=120'
+    
     updated_line=$(echo "$line" | sed 's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime,commit=120/')
     echo "Replacing line: $line"
     echo "With: $updated_line"
 
     # Use sudo to update the file
+    
     sudo sed -i "s|$line|$updated_line|" /etc/fstab
 
     # Set changes_made to true
+    
     fstab_modifications_made=true
   fi
 done < /etc/fstab
 
 # Check if changes were made and echo appropriate message
+
 if [ "$fstab_modifications_made" = true ]; then
   echo "Changes were made to /etc/fstab to tweak btrfs for electronic storage."
 else
@@ -159,11 +177,13 @@ sudo apt update
 sudo apt install gnome-shell gnome-console gnome-tweaks nautilus -y
 
 # don't need gnome-shell-extension-prefs as gnome-shell-extension-manager will be installed and performs the same stuff
+
 sudo apt autoremove --purge gnome-shell-extension-prefs -y
 
 ################################################################################
-# 6 - INSTALL SOME TOOLS
+# 6 - INSTALL SOME USEFUL TOOLS NOT INSTALLED BY DEFAULT
 ################################################################################
+
 sudo apt install curl git -y
 
 sudo apt install cups -y
@@ -171,23 +191,28 @@ sudo apt install cups -y
 sudo apt install python3-venv python3-pip -y
 
 ################################################################################
-# 7 -CUSTOMIZE BOOT
+# 7 - CUSTOMIZE BOOT SPEED AND LOOK
 ################################################################################
+
 echo "Customize Boot Splash"
 
 # install plymouth-theme and set theme to use OEM Bios Logo
+
 sudo apt install plymouth-themes -y
 sudo plymouth-set-default-theme -R bgrt
+
 echo "Plymouth splash has been changed."
 
 # Customize GRUB values
+
 NEW_GRUB_TIMEOUT=0  # Immediatly load the kernel
-NEW_GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0 amd_pstate=passive amd_pstate.shared_mem=1"  # Show plymouth theme
+NEW_GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0 amd_pstate=passive amd_pstate.shared_mem=1"  # Show plymouth theme and enable AMD P-State module
 NEW_GRUB_BACKGROUND=""  # No background
 GRUB_PATH="/etc/default/grub"
 
 # Change the GRUB_TIMEOUT value
 sudo sed -i "s/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=$NEW_GRUB_TIMEOUT/" $GRUB_PATH
+
 # Change the GRUB_CMDLINE_LINUX_DEFAULT value
 sudo sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"$NEW_GRUB_CMDLINE_LINUX_DEFAULT\"/" $GRUB_PATH
 
@@ -204,13 +229,15 @@ sudo update-grub
 ################################################################################
 # 8 - ADD ZRAMSWAP
 ################################################################################
+
 echo "Install and configure swap spaces"
-sudo apt install zram-tools -y --quiet
+
+sudo apt install zram-tools -y
 
 # ZRAM - desired values
 ALGO="zstd"
 PERCENT=400
-PRIORITY=190
+PRIORITY=180
 
 # ZRAM - uncomment and modify the values
 sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
@@ -234,8 +261,9 @@ done
 # 9 - FLATPAK - ADD SOFTWARE STORE
 ################################################################################
 
-echo "Add flatpak support"
+echo "Add FlatPak support"
 sudo apt install gnome-software-plugin-flatpak -y
+
 echo "Add FlatHub repository"
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 sudo flatpak update
@@ -243,11 +271,12 @@ sudo flatpak update
 ################################################################################
 # 10 - FLATPAK - ADD SOFTWARES
 ################################################################################
+
 # List of Flatpak applications to install
+
 flathub_applications_list=(
   "com.mattjakeman.ExtensionManager" # gnome-shell-extension-manager
-#  "io.github.realmazharhussain.GdmSettings" # personalize GDM settings
-  "io.missioncenter.MissionCenter" # resource monitoring
+  "io.missioncenter.MissionCenter" # detailed resource monitoring
   "org.gnome.Evince" # document viewer
   "org.gnome.Loupe" # image viewer
   "org.gnome.font-viewer" # font viewer
@@ -260,10 +289,11 @@ for flathub_app in "${flathub_applications_list[@]}"; do
 done
 
 ################################################################################
-# 11- APT - ADD EXTRA REPOSITORIES
+# 11- APT - ADD EXTERNAL REPOSITORIES
 ################################################################################
 
 # Function to add a repository
+
 add_repository() {
     echo "Adding $1 repository"
 
@@ -292,11 +322,13 @@ sudo apt update
 ################################################################################
 # 12 - SYSTEM - GET SOME EXTRA SOFTWARES
 ################################################################################
+
 # Create a temporary directory for deb files
-mkdir -p ./temp_deb
-touch ./temp_deb/safely_delete_this_directory
+
+TEMP_DIR=$(mktemp -d)
 
 # Function to extract the latest Docker Desktop deb package URL
+
 get_latest_docker_url() {
     local docker_url=$(curl -sL "https://docs.docker.com/desktop/install/debian/" | grep -oP 'https://desktop.docker.com/linux/main/amd64/docker-desktop-\d+\.\d+\.\d+-amd64.deb' | head -n 1)
     echo "$docker_url"
@@ -312,14 +344,16 @@ declare -A deb_urls=(
 )
 
 for app in "${!deb_urls[@]}"; do
-    wget "${deb_urls[$app]}" -O "./temp_deb/${app// /_}.deb"
+    wget "${deb_urls[$app]}" -O "$TEMP_DIR/${app// /_}.deb"
 done
 
 # Install deb packages
-sudo apt install ./temp_deb/*.deb -y
+
+sudo apt install $TEMP_DIR/*.deb -y
 
 # Clean up the temporary directory
-rm -Rf ./temp_deb
+
+rm -Rf "$TEMP_DIR"
 
 ################################################################################
 # 13 - SYSTEM - GET ONEDRIVE
@@ -328,16 +362,16 @@ rm -Rf ./temp_deb
 sudo apt install onedrive -y
 
 ################################################################################
-# 14 - SYSTEM - ENABLE SERVICES
+# 14 - SYSTEM - ENABLE SERVICES FOR CURRENT USER
 ################################################################################
+
 systemctl --user enable docker-desktop
 systemctl --user enable onedrive
 
-# hide docker-desktop icon
+# hide docker-desktop icon as it crashs docker-desktop if used
 file_path="/usr/share/applications/docker-desktop.desktop"
 new_line="NoDisplay=true"
 
-# Check if the file exists and is writable
 echo "$new_line" | sudo tee -a "$file_path"
 
 ################################################################################
@@ -345,6 +379,7 @@ echo "$new_line" | sudo tee -a "$file_path"
 ################################################################################
 
 # gnome-shell-extension URLs
+
 extension_urls=(
   "https://extensions.gnome.org/extension-data/tiling-assistantleleat-on-github.v45.shell-extension.zip"
   "https://extensions.gnome.org/extension-data/onedrivediegomerida.com.v11.shell-extension.zip"
@@ -379,6 +414,7 @@ sudo apt install gir1.2-soup-2.4 -y
 ################################################################################
 # 16 - FONTS WITH LIGATURE SUPPORT - INSTALL
 ################################################################################
+
 # URL of the GitHub releases page
 GITHUB_URL="https://github.com/ryanoasis/nerd-fonts/releases"
 
@@ -399,17 +435,23 @@ else
 fi
 
 # Download Victor Mono Font with wget
+
 wget https://rubjo.github.io/victor-mono/VictorMonoAll.zip
 
 # Now extract the fonts
 unzip FiraCode.zip -d FiraCode
 unzip VictorMonoAll.zip -d VictorMonoAll
+
+# Move the fonts in the right place
 mv VictorMonoAll/TTF VictorMonoAll/VictorMono
 sudo mv FiraCode /usr/share/fonts/truetype/
 sudo mv VictorMono /usr/share/fonts/truetype/
+
+# Clean up
 rm -Rf FiraCode*
 rm -Rf VictorMono*
 
+# Add an emoji font
 sudo apt install fonts-noto-color-emoji -y --quiet
 
 ################################################################################
@@ -445,6 +487,7 @@ echo "mglru.service created and enabled."
 ################################################################################
 # 18 - Get Latest Proton-GE relase and install it in steam folder
 ################################################################################
+
 # Define the GitHub repository and API URL
 REPO_URL="https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"
 
@@ -463,23 +506,29 @@ curl -L -o "$TEMP_DIR/$RELEASE_FILENAME" "$RELEASE_URL"
 # Extract the release
 tar -xzvf "$TEMP_DIR/$RELEASE_FILENAME" -C "$TEMP_DIR"
 rm "$TEMP_DIR/$RELEASE_FILENAME"
+
 # Copy the uncompressed folder to the desired location
 dir_path="$HOME/.local/share/Steam/compatibilitytools.d/"
 mkdir -p "$dir_path"
 cp -r "$TEMP_DIR/"* $dir_path
+
 # Clean up temporary files and directories
-rm -rf "$TEMP_DIR"
+rm -Rf "$TEMP_DIR"
 
 echo "Latest release of Proton-GE has been installed."
 
 ################################################################################
 # 19 - Install MoreWaita and Bibata Amber Cursor
 ################################################################################
+
+# MoreWaita icon theme
 git clone https://github.com/somepaulo/MoreWaita.git
 cd MoreWaita
 sudo ./install.sh
 cd ..
 rm -Rf MoreWaita
+
+# Bibata cursor theme
 
 # Fetch the latest release version from GitHub
 latest_version=$(curl -s "https://api.github.com/repos/ful1e5/Bibata_Cursor/releases/latest" | jq -r ".tag_name")
@@ -491,22 +540,22 @@ fi
 download_url="https://github.com/ful1e5/Bibata_Cursor/releases/download/${latest_version}/Bibata-Modern-Amber.tar.xz"
 
 # Create a temporary directory for downloading and extracting the file
-temp_dir=$(mktemp -d)
+TEMP_DIR=$(mktemp -d)
 
 # Download the file
 echo "Downloading Bibata-Modern-Amber.tar.xz..."
-curl -sL -o "$temp_dir/Bibata-Modern-Amber.tar.xz" "$download_url"
+curl -sL -o "$TEMP_DIR/Bibata-Modern-Amber.tar.xz" "$download_url"
 
 # Uncompress the file
 echo "Extracting Bibata-Modern-Amber.tar.xz..."
-tar -xJf "$temp_dir/Bibata-Modern-Amber.tar.xz" -C "$temp_dir"
+tar -xJf "$TEMP_DIR/Bibata-Modern-Amber.tar.xz" -C "$TEMP_DIR"
 
 # Copy the folder to /usr/share/icons/
 echo "Copying Bibata-Modern-Amber to /usr/share/icons/..."
-sudo cp -r "$temp_dir/Bibata-Modern-Amber" /usr/share/icons/
+sudo cp -r "$TEMP_DIR/Bibata-Modern-Amber" /usr/share/icons/
 
 # Clean up the temporary directory
-rm -rf "$temp_dir"
+rm -Rf "$TEMP_DIR"
 
 echo "Bibata-Modern-Amber has been copied to /usr/share/icons/"
 
@@ -540,7 +589,7 @@ for setting in "${settings[@]}"; do
   gsettings set $setting
 done
 
-# Some custom Gnome extensions settings which modify the desktop environment
+# Some custom Gnome extensions settings which modify the use of the desktop environment
 dconf write /org/gnome/shell/extensions/dash-to-dock/hot-keys false
 dconf write /org/gnome/shell/extensions/dash-to-dock/intellihide-mode 'ALL_WINDOWS'
 dconf write /org/gnome/shell/extensions/dash-to-dock/running-indicator-style 'SQUARES'
@@ -638,7 +687,7 @@ sudo rm /etc/network/interfaces.backup
 echo "Switched from ifupdown to NetworkManager for $wifi_interface."
 
 ############
-# Improve support of wayland for Google Chrome
+# Improve support of Wayland for Google Chrome
 ############
 
 # Get the path to the `/etc/environment` file.
