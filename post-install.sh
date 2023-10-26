@@ -73,7 +73,7 @@ fi
 #       modified_line="$line contrib non-free"
 
 #       # Replace the original line with the modified line in the temporary file
-#       sudo sed -i "s|$line|$modified_line|" /etc/apt/sources.list.tmp
+#       sudo  -i "s|$line|$modified_line|" /etc/apt/sources.list.tmp
 #       # Set the modifications flag to true
 #       sources_list_modifications_made=true
 #     fi
@@ -146,13 +146,13 @@ while IFS= read -r line; do
 
     # Replace 'defaults' with 'ssd,discard=async,autodefrag,compress=zstd,commit=120'
     
-    updated_line=$(echo "$line" | sed 's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime,commit=120/')
+    updated_line=$(echo "$line" |  's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime,commit=120/')
     echo "Replacing line: $line"
     echo "With: $updated_line"
 
     # Use sudo to update the file
     
-    sudo sed -i "s|$line|$updated_line|" /etc/fstab
+    sudo  -i "s|$line|$updated_line|" /etc/fstab
 
     # Set changes_made to true
     
@@ -211,14 +211,14 @@ NEW_GRUB_BACKGROUND=""  # No background
 GRUB_PATH="/etc/default/grub"
 
 # Change the GRUB_TIMEOUT value
-sudo sed -i "s/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=$NEW_GRUB_TIMEOUT/" $GRUB_PATH
+sudo  -i "s/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=$NEW_GRUB_TIMEOUT/" $GRUB_PATH
 
 # Change the GRUB_CMDLINE_LINUX_DEFAULT value
-sudo sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"$NEW_GRUB_CMDLINE_LINUX_DEFAULT\"/" $GRUB_PATH
+sudo  -i "s/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT=\"$NEW_GRUB_CMDLINE_LINUX_DEFAULT\"/" $GRUB_PATH
 
 # Change or add the GRUB_BACKGROUND value
 if grep -q "^GRUB_BACKGROUND=" $GRUB_PATH; then
-  sudo sed -i "s/GRUB_BACKGROUND=.*/GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"/" $GRUB_PATH
+  sudo  -i "s/GRUB_BACKGROUND=.*/GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"/" $GRUB_PATH
 else
   echo "GRUB_BACKGROUND=\"$NEW_GRUB_BACKGROUND\"" | sudo tee -a $GRUB_PATH
 fi
@@ -240,9 +240,9 @@ PERCENT=400
 PRIORITY=180
 
 # ZRAM - uncomment and modify the values
-sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
-sudo sed -i "s/#\s*PERCENT=.*/PERCENT=$PERCENT/" /etc/default/zramswap
-sudo sed -i "s/#\s*PRIORITY=.*/PRIORITY=$PRIORITY/" /etc/default/zramswap
+sudo  -i "s/#\s*ALGO=.*/ALGO=\"$ALGO\"/" /etc/default/zramswap
+sudo  -i "s/#\s*PERCENT=.*/PERCENT=$PERCENT/" /etc/default/zramswap
+sudo  -i "s/#\s*PRIORITY=.*/PRIORITY=$PRIORITY/" /etc/default/zramswap
 
 sysctl_values_to_add=(
   "vm.page-cluster=0"
@@ -368,7 +368,7 @@ sudo apt install onedrive -y
 systemctl --user enable docker-desktop
 systemctl --user enable onedrive
 
-# hide docker-desktop icon as it crashs docker-desktop if used
+# hide docker-desktop icon as it crashs docker-desktop if u
 file_path="/usr/share/applications/docker-desktop.desktop"
 new_line="NoDisplay=true"
 
@@ -507,7 +507,7 @@ curl -L -o "$TEMP_DIR/$RELEASE_FILENAME" "$RELEASE_URL"
 tar -xzvf "$TEMP_DIR/$RELEASE_FILENAME" -C "$TEMP_DIR"
 rm "$TEMP_DIR/$RELEASE_FILENAME"
 
-# Copy the uncompressed folder to the desired location
+# Copy the uncompres folder to the desired location
 dir_path="$HOME/.local/share/Steam/compatibilitytools.d/"
 mkdir -p "$dir_path"
 cp -r "$TEMP_DIR/"* $dir_path
@@ -611,17 +611,12 @@ font-hinting='slight'"
 # File to edit
 file_path="/etc/gdm3/greeter.dconf-defaults"
 
-# Check if the file exists
-if [ -e "$file_path" ]; then
-  # Use sed to add the lines to the specified section
-  sudo sed -i "/\[org\/gnome\/desktop\/interface\]/,/\[/c\\$new_lines" "$file_path"
-  echo "Lines added to $file_path"
-else
-  echo "File not found: $file_path"
-fi
+# Add the lines to the specified section using echo and cat
+echo "$new_lines" | sudo cat - "$file_path" > temp_file && sudo mv temp_file "$file_path"
 
 # Disable accessibility icon in gdm
 
+# Define the configuration file and the section/key to change
 # Define the configuration file and the section/key to change
 config_file="/usr/share/gdm/dconf/00-upstream-settings"
 section="[org/gnome/desktop/a11y]"
@@ -630,8 +625,8 @@ key="always-show-universal-access-status"
 # Define the new value to set
 new_value="false"
 
-# Use sed to replace the existing value
-sudo sed -i "/^\[$section\]/,/^\[/{s/$key=.*/$key=$new_value/}" "$config_file"
+# Use echo and cat to replace the existing value
+echo -e "$section\n$key=$new_value" | sudo cat - "$config_file" > temp_file && sudo mv temp_file "$config_file"
 
 sudo dpkg-reconfigure gdm3
 
