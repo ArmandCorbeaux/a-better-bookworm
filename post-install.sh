@@ -597,6 +597,11 @@ dconf write /org/gnome/shell/extensions/dash-to-dock/running-indicator-style "['
 # customize GDM3 settings to match gnome desktop theme
 echo "customize GDM3 login interface"
 
+
+# File to edit
+config_file="/etc/gdm3/greeter.dconf-defaults"
+# Targeted section
+section="[org/gnome/desktop/interface]"
 # Lines to add
 new_lines="cursor-theme='Bibata-Modern-Amber'
 icon-theme='MoreWaita'
@@ -606,38 +611,8 @@ clock-show-seconds=true
 clock-show-weekday=true
 font-antialiasing='grayscale'
 font-hinting='slight'"
-
-# File to edit
-file_path="/etc/gdm3/greeter.dconf-defaults"
-
-# Create a temporary file for the modified content
-temp_file=$(mktemp)
-
-# Flag to indicate whether we're inside the [org/gnome/desktop/interface] section
-inside_section=0
-
-# Read the original file line by line
-while IFS= read -r line; do
-  # Check if we're inside the [org/gnome/desktop/interface] section
-  if [[ $line == "[org/gnome/desktop/interface]" ]]; then
-    inside_section=1
-  fi
-
-  # If we're inside the section, append the new lines
-  if [[ $inside_section -eq 1 ]]; then
-    echo "$line" >> "$temp_file"
-    if [[ $line == "[org/gnome/desktop/interface]" ]]; then
-      # Append the new lines below the section header
-      echo "$new_lines" >> "$temp_file"
-      inside_section=0
-    fi
-  else
-    echo "$line" >> "$temp_file"
-  fi
-done < "$file_path"
-
-# Replace the original file with the modified content
-sudo mv "$temp_file" "$file_path"
+# Use sed to append new lines to the specific section of the config file
+sudo sed -i "/$section/,/^$/s/$/\n$new_lines/" "$config_file"
 
 # Disable accessibility icon in gdm
 
