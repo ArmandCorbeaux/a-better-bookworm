@@ -639,8 +639,6 @@ done < "$file_path"
 # Replace the original file with the modified content
 sudo mv "$temp_file" "$file_path"
 
-echo "$new_lines" | sudo cat - "$file_path" > temp_file && sudo mv temp_file "$file_path"
-
 # Disable accessibility icon in gdm
 
 # Define the config file, section, key, and new value
