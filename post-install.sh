@@ -598,8 +598,7 @@ dconf write /org/gnome/shell/extensions/dash-to-dock/running-indicator-style "['
 echo "customize GDM3 login interface"
 
 # Lines to add
-new_lines="[org/gnome/desktop/interface]
-cursor-theme='Bibata-Modern-Amber'
+new_lines="cursor-theme='Bibata-Modern-Amber'
 icon-theme='MoreWaita'
 document-font-theme='Candarell 11'
 font-theme='Candarell 11'
@@ -611,21 +610,47 @@ font-hinting='slight'"
 # File to edit
 file_path="/etc/gdm3/greeter.dconf-defaults"
 
-# Add the lines to the specified section using echo and cat
+# Create a temporary file for the modified content
+temp_file=$(mktemp)
+
+# Flag to indicate whether we're inside the [org/gnome/desktop/interface] section
+inside_section=0
+
+# Read the original file line by line
+while IFS= read -r line; do
+  # Check if we're inside the [org/gnome/desktop/interface] section
+  if [[ $line == "[org/gnome/desktop/interface]" ]]; then
+    inside_section=1
+  fi
+
+  # If we're inside the section, append the new lines
+  if [[ $inside_section -eq 1 ]]; then
+    echo "$line" >> "$temp_file"
+    if [[ $line == "[org/gnome/desktop/interface]" ]]; then
+      # Append the new lines below the section header
+      echo "$new_lines" >> "$temp_file"
+      inside_section=0
+    fi
+  else
+    echo "$line" >> "$temp_file"
+  fi
+done < "$file_path"
+
+# Replace the original file with the modified content
+sudo mv "$temp_file" "$file_path"
+
 echo "$new_lines" | sudo cat - "$file_path" > temp_file && sudo mv temp_file "$file_path"
 
 # Disable accessibility icon in gdm
 
-# Define the configuration file and the section/key to change
+# Define the config file, section, key, and new value
 config_file="/usr/share/gdm/dconf/00-upstream-settings"
 section="[org/gnome/desktop/a11y]"
 key="always-show-universal-access-status"
-
-# Define the new value to set
 new_value="false"
 
-# Use echo and cat to replace the existing value
-echo -e "$section\n$key=$new_value" | sudo cat - "$config_file" > temp_file && sudo mv temp_file "$config_file"
+# Use sed to modify the key in the specific section of the config file
+sudo sed -i "/$section]/,/^$/ s/\($key\s*=\s*\).*/\1$new_value/" "$config_file"
 
 sudo dpkg-reconfigure gdm3
 
@@ -688,7 +713,13 @@ echo "Switched from ifupdown to NetworkManager for $wifi_interface."
 environment_file="/etc/environment"
 
 # Add the Google Chrome Wayland and PipeWire flags to the `/etc/environment` file.
-echo "CHROME_FLAGS=\"--ozone-platform=wayland --enable-features=UsePipeWire --enable-features=Vulkan  --enable-features=UseFuchsiaDirectComposition --enable-features=UseWaylandEGLPlatform\"" | sudo tee -a ${environment_file}
+echo "CHROME_FLAGS=\"--ozone-platform=wayland --enable-features=UsePipeWire --enable-features=Vulkan\"" | sudo tee -a ${environment_file}
 
+#################################################################################
+# 22 - End of operations
+#################################################################################
 rm ./post-install.sh
-echo "System can be reboot"
+
+echo "System will reboot"
+sleep 5
+sudo reboot
