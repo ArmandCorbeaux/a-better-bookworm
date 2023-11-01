@@ -598,21 +598,21 @@ dconf write /org/gnome/shell/extensions/dash-to-dock/running-indicator-style "['
 echo "customize GDM3 login interface"
 
 
-# File to edit
-config_file="/etc/gdm3/greeter.dconf-defaults"
-# Targeted section
-section="[org/gnome/desktop/interface]"
-# Lines to add
-new_lines="cursor-theme='Bibata-Modern-Amber'
-icon-theme='MoreWaita'
-document-font-theme='Candarell 11'
-font-theme='Candarell 11'
-clock-show-seconds=true
-clock-show-weekday=true
-font-antialiasing='grayscale'
-font-hinting='slight'"
-# Use sed to append new lines to the specific section of the config file
-sudo sed -i "/$section/,/^$/a\n$new_lines" "$config_file"
+# Define the file to be edited
+file="/etc/gdm3/greeter.dconf-defaults"
+
+# Use sed to make the desired changes
+sudo sed -i '/\[org\/gnome\/desktop\/interface\]/a\
+cursor-theme='\''Bibata-Modern-Amber'\''\
+icon-theme='\''MoreWaita'\''\
+document-font-theme='\''Cantarell 11'\''\
+font-theme='\''Cantarell 11'\''\
+clock-show-seconds=true\
+clock-show-weekday=true\
+font-antialiasing='\''grayscale'\''\
+font-hinting='\''slight'\''\
+' "$file"
+
 
 # Disable accessibility icon in gdm
 
