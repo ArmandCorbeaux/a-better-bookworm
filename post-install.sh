@@ -612,7 +612,7 @@ clock-show-weekday=true
 font-antialiasing='grayscale'
 font-hinting='slight'"
 # Use sed to append new lines to the specific section of the config file
-sudo sed -i "/$section/,/^$/s/$/\n$new_lines/" "$config_file"
+sudo sed -i "/$section/,/^$/a\n$new_lines" "$config_file"
 
 # Disable accessibility icon in gdm
 
