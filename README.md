@@ -2,89 +2,70 @@
 
 **Supported version :** Debian 12 Bookworm
 
-The purpose is to provide a bash script which performs the various actions and optimizations after a minimal debian installation to provide an operating system.
+*Regarding to some news, this is like a "new OS based on Debian".*
+*But the system remains a Debian, with just a brunch of adds which improves it.*
 
+**The  bash script performs tasks to have a more modern desktop experience :**
+- minimal Gnome Desktop (with printer support)
+- some installed softwares (from official repositories) :
+Google Chrome, Visual Studio Code, Hyper Terminal, Docker Desktop, Steam (and Proton-GE)
+- add OneDrive support
+- defaults installed extensions : tilling assistant, bing wallpaper, dash to dock, caffeine
+- FlatPak is enabled by default (to have latest desktop utilities)
 
-## Initial system
-You must create 2 partitions :
+## Initial system installation
+Don't create a "root" account : you must have a user with sudo rights.
+
+Recommanded disk partitions :
 - 1st has a 256MB size, and must be 'EFI' type
 - 2nd takes all the free space available, and must be 'btrfs' type
 
-As installed componants, you need only 'essential tools'.
+Installed componants: only 'essential tools'.
 
-## My objective :
-- Create a script to batch all these actions that actually I perform manually
-In a first time :
-- Fstab : add options on the right UUID for the btrfs partition
+## Howto Install script
+1- Log into your session
+2- Execute these commands :
+```bash
+wget https://raw.githubusercontent.com/ArmandCorbeaux/better-bookworm/post-install.sh
+chmod +rx post-install.sh
+./post-install.sh
+```
+3- System reboot and GDM3 prompt
+
+## Why this project?
+I have wanted to create a script to batch all these actions that I perform manually or after with my mouse.
+
+**It includes :**
+- Fstab : tweaks for SSD or M2 storage
 - Gnome : perform minimal installation to have a functionnal desktop
-- Software installation : get the latest deb from official webpage and install them, or install the latest repository, fetch and install.
-- Perform some post-installation operation : service launch and icon hide (docker-desktop has a bug when you launch it from the shortcut when it's started)
-- Install gnome-shell-extension-(...) to have a better shell experience
-- Flatpak : add repository, update the list and install applications
-- Customized cursor and enhanced icon pack : get files and install them
-- Steam: get latest proton-ge and install it
- 
-## My expained choices :
+- Softwares : get the latest deb from official webpage and install them, or install the latest repository, fetch and install.
+- Gnome-Shell-Extensions : to have a better shell experience
+- Flatpak : have latest desktop softwares releases
+- Tweaks perform some post-installation operation (start services, ...)
+- Steam: get latest Proton-GE
+- Customization : cursor, fonts and icons
 
-*And what kind of benefits I see with them :*
+## Google Chrome
+Pipewire, Vulkan and Wayland flags are enabled by default
 
-**Gnome desktop :**
-- Simple, configurable and productive environment
-- **only the needed packages for a minimal but fully functionnal desktop environment**.
+## ZRAM swap
+Set to 400% of the available memory
 
-**Limited UI customization :**
-- **No themes :** it breaks the libadwaita light/dark desktop features
-- **Cursors :** I like to have something "modern" and "usable", which provides a specific and modern identity for my desktop. Bibata cursors have this meaning in my opinion.
-- **Icons :** I want to **stay in the Adwaita style**, but expand it. And also **be able to perform some customizations of the folders**, to identify through the color where is my folder and what does it contain. That's why I choose MoreWaita and get some folders icons from Adwaita++.
-- I like to have a **wallpaper which changes automatically everyday** and make me discover some nice places of the world. Bing wallpapers provide me this option.
+## Icons and cursor
+Icon pack : MoreWaita
+Cursor : Bibata-Modern-Amber
+## Installed Fonts
+- Victor Mono (more for VS Code), FiraCode Nerd Fonts (more for Hyper Terminal), Noto Color Emoji
 
-**Use btrfs rather than ext4 :**
-DONE
-- **Snapshots** of the system can be perform if needed.
-- It performs **automatic data compression**. Zstd seems to be the best choice between CPU use and compression ratio.
-- There's **optimizations** for rewritable electronic chip storage systems with lilmited life time (SSD,M2, ...) *[ even if with calculations, progress have been perform since the beginning of the technology, and now they can be used more than 10 years... ]*
+## Remaining bugs
+Google Chrome : the 1st time you get the gnome desktop, you must log out. Else Google Chrome will hang at 1st launch
+Docker Desktop : desktop icon has been hidden, nor it crashs docker-desktop service.
+Gnome-Shell-Extension-Manager : slider is "on" but stays visually on the "off" position
 
-**Use ZramSwap rather than swap partition :**
-DONE
-- Zram creates a **swap space in memory**. And RAM has has quicker access than drive.
-- It performs **automatic data compression**. Zstd seems to be the best choice between CPU use and compression ratio.
-- In some point of view, ZRAM can be see as a process to perform RAM compression. And **virtually "expand" the available memory size** of the targetted computer.
+## Will you add Adwaita user theme support?
+It has been removed, because using custom themes breaks the light/dark theme switch of Gnome.
 
-**Use flatpak for some kind of applications rather than debian packages :**
-DONE
-- Flatpak can be used by all kinds of desktop applications, and aims to be **as agnostic as possible** regarding how applications are built. There are **no requirements** regarding which programming languages, build tools, toolkits or frameworks can be used.
-- Desktop applications are **sandboxed**.
-- Having the **latest versions** of the installed applications.
-
-**Add some sources repositories for applications from major companies :**
-DONE
-- Google Chrome, Microsoft Visual Studio Code, Docker, Google Cloud CLI
-- They are **widely used** and **well supported**.
-- They are **in some way an "industry standard"**.
-- Repositories provide **sometimes supported more up-to-date packages for the OS**.
-
-**Have some specific fonts :**
-- I like the **"ligature support" feature**.
-- I need to **easily read linesand words** 
-- "Victor Mono" is actually my favorite font to code.
-- "FiraCode Nerd Font" is actually my favorite font for my terminal.
-- "Noto Color Emoji" is installed, as sometimes emoji are needed in CLI.
-
-**Have a "modern terminal" :**
-DONE
-- Font ligature support
-- Easy to use and configure
-- Better if it's lighweight
-- Functionnality can be extended if needed
-- After looking after a terminal with these features, I have choosen Hyper Terminal.
-
-**Have OneDrive support and use it to backup datas:**
-DONE
-- If you have a "Microsoft 365" account, I think that it's nice to be able to use the allowed space on OneDrive.
-- Onedrive client on Linux has a feature to exclude temporary files and folders. As when a project is builded or developped.
-
-**Add Steam client and Proton-GE:**
-- An awesome work has been performed by Valve to improve compatibility with games.
-- It permits to **execute with simplicity windows games**.
-- Proton-GE provides an **easy way to execute FSR on all games**, and gains some FPS.
-- Through Steam, I can **execute others launchers** from others stores. And I have fewer stuff to manage and think about.
+## What remains to improve
+- Find a nice solution to periodically fetch latest releases for : Hyper Terminal,Docker-Desktop, Proton-GE, Bibata cursors, MoreWaita icon pack, FiraCode Nerd Font
+**More technically :**
+- Split the script into coherents parts of executed actions
