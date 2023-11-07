@@ -24,11 +24,10 @@ Installed componants: only 'essential tools'.
 
 ## Howto Install script
 1- Log into your session
-2- Execute these commands :
+2- Execute this commands :
 ```bash
-wget https://raw.githubusercontent.com/ArmandCorbeaux/better-bookworm/post-install.sh
-chmod +rx post-install.sh
-./post-install.sh
+wget https://github.com/ArmandCorbeaux/better-bookworm/raw/main/install.sh
+bash ./install.sh
 ```
 3- System reboot and GDM3 prompt
 
