@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 08 - ADD ZRAMSWAP
+# 103 - ADD ZRAMSWAP
 ################################################################################
 #
 # Job :     Change boot style and enable amd_pstate if AMD CPU
@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  whole system
+# Impact :  system
 #
 # Inputs :  ZRAM_ALGO, ZRAM_PERCENT, ZRAM_PRIORITY
 #           SYSCTL_VALUES
@@ -19,10 +19,12 @@
 #   https://en.wikipedia.org/wiki/Zram
 
 
+# Values in zramswap
 ZRAM_ALGO="zstd"
 ZRAM_PERCENT=400
 ZRAM_PRIORITY=180
 
+# Values in sysctl.conf
 SYSCTL_VALUES=(
   "vm.page-cluster=0"
   "vm.swappiness=180"
@@ -31,6 +33,7 @@ SYSCTL_VALUES=(
   "vm.max_map_count = 2147483642"
 )
 
+# Files location
 ZRAM_TARGET="/etc/default/zramswap"
 SYSCTL_TARGET="/etc/sysctl.conf"
 

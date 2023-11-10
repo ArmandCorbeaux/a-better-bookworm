@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 01 - APT - SOURCES.LIST - ADD BACKPORTS REPOSITORY
+# 001 - APT - SOURCES.LIST - ADD BACKPORTS REPOSITORY
 ################################################################################
 #
 # Job :     add backports repositories on /etc/apt.sources.list
@@ -9,13 +9,13 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  whole system
+# Impact :  system
 # 
 # Inputs :  dist_codename, TARGET
 # Outputs : TARGET
 #
 # More informations :
-#   https://backports.debian.org/
+#           https://backports.debian.org/
 
 TARGET="/etc/apt/sources.list"
 

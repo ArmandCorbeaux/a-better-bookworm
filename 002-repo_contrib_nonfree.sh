@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 02 - APT - SOURCES.LIST - ADD CONTRIB AND NON-FREE ENTRIES
+# 002 - APT - SOURCES.LIST - ADD CONTRIB AND NON-FREE ENTRIES
 ################################################################################
 #
 # Job :     add contrib and non-free entries on /etc/apt.sources.list
@@ -9,13 +9,13 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  whole system
+# Impact :  system
 #
 # Inputs :  TARGET
 # Outputs : TARGET
 #
 # More informations :
-#   https://wiki.debian.org/SourcesList
+#           https://wiki.debian.org/SourcesList
 
 TARGET="/etc/apt/sources.list"
 

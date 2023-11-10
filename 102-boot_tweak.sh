@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 7 - CUSTOMIZE BOOT SPEED AND LOOK
+# 102 - CUSTOMIZE BOOT SPEED AND LOOK
 ################################################################################
 #
 # Job :     Change boot style and enable amd_pstate if AMD CPU
@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  whole system
+# Impact :  system
 #
 # Inputs :  PLYMOUTH_THEME
 #           NEW_GRUB_TIMEOUT, NEW_GRUB_CMDLINE_LINUX_DEFAULT, NEW_GRUB_BACKGROUND
@@ -17,23 +17,25 @@
 # Outputs : plymouth, GRUB_PATH
 #
 # More informations :
-#   - Remove wait time at boot
-#   - Enable splash screen
-#   - Theme with OEM Bios logo
-#   - if AMD CPU : add commands to enable amd_pstate on kernel 6.1
+#           GRUB :      Remove wait time at boot
+#           GRUB :      Enable splash screen
+#           Kernel :    if AMD CPU and pstate supported, add commands to enable amd_pstate on kernel 6.1
+#           Plymouth :  Theme with OEM Bios logo
 
 # Customize GRUB values
 NEW_GRUB_TIMEOUT=0  # Immediatly load the kernel
 NEW_GRUB_CMDLINE_LINUX_DEFAULT="fsck.mode=skip quiet splash loglevel=3"  # Show plymouth theme and enable AMD P-State module
 NEW_GRUB_BACKGROUND=""  # No background
-
-PLYMOUTH_THEME="bgrt"
-
+# GRUB file path
 GRUB_PATH="/etc/default/grub"
 
-# Check if the CPU is AMD
-if [[ $(cat /proc/cpuinfo | grep vendor_id | uniq) == *"AuthenticAMD"* ]]; then
+# Splash theme to enable
+PLYMOUTH_THEME="bgrt"
+
+# Check if the CPU is AMD and support 'pstate' to enable module
+if [[ $(cat /proc/cpuinfo | grep vendor_id | uniq) == *"AuthenticAMD"* ]] && [[ $(cat /proc/cpuinfo | grep flags | uniq) == *"pstate"* ]]; then
   NEW_GRUB_CMDLINE_LINUX_DEFAULT+=" amd_pstate=passive amd_pstate.shared_mem=1"
+  echo "AMD CPU with 'pstate' detected. Specific settings will be applied"
 fi
 
 # Update packages list

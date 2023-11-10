@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 03 - APT - SOURCES.LIST - DISABLE DEB-SRC LINES
+# 003 - APT - SOURCES.LIST - DISABLE DEB-SRC LINES
 ################################################################################
 #
 # Job :     add # at the beginning of each deb-src lines
@@ -9,13 +9,13 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  whole system
+# Impact :  system
 #
 # Inputs :  TARGET
 # Outputs : TARGET
 #
 # More informations :
-#   https://wiki.debian.org/SourcesList
+#           https://wiki.debian.org/SourcesList
 
 TARGET="/etc/apt/sources.list"
 

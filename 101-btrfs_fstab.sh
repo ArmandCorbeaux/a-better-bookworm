@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 04 - CHANGE BTRFS FLAGS IN FSTAB
+# 101 - CHANGE BTRFS FLAGS IN FSTAB
 ################################################################################
 #
 # Job :     changes settings in /etc/fstab if a btrfs partition is used
@@ -9,20 +9,20 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  whole system
+# Impact :  system
 #
 # Inputs :  TARGET
 # Outputs : TARGET
 #
 # More informations :
-#   Settings are optimized for electronic storage :
-#     discard=async:  enables the TRIM command, which helps to keep SSD clean and maintain its performance over time.
-#     autodefrag:     automatically defragments files on the fly, which can help to improve performance.
-#     compress=zstd:  enables transparent compression of files, which can help to save disk space.
-#     commit=120:     sets the interval between committing changes to the file system to 120 seconds.
-#                     help to improve performance by reducing the number of writes to the disk.
+#           Settings are optimized for electronic storage :
+#           discard=async:  Enables the TRIM command, which helps to keep SSD clean and maintain its performance over time.
+#           autodefrag:     Automatically defragments files on the fly, which can help to improve performance.
+#           compress=zstd:  Enables transparent compression of files, which can help to save disk space.
+#           commit=120:     Sets the interval between committing changes to the file system to 120 seconds.
+#                           Help to improve performance by reducing the number of writes to the disk.
 
-TARGET="/etc/fstab"
+FSTAB_PATH="/etc/fstab"
 
 # Flag to track if modifications are made
 modifications_made=false
@@ -37,23 +37,23 @@ while IFS= read -r line; do
     updated_line=$(echo "$line" | sed 's/defaults/ssd,discard=async,autodefrag,compress=zstd,noatime,commit=120/')
 
     # Use sudo to update the file    
-    sudo sed -i "s|$line|$updated_line|" $TARGET
+    sudo sed -i "s|$line|$updated_line|" $FSTAB_PATH
 
     # Set changes_made to true
     modifications_made=true
 
   fi
 
-done < $TARGET
+done < $FSTAB_PATH
 
 # Check if changes were made and echo appropriate message
 
 if [ "$modifications_made" = true ]; then
 
-  echo "Changes performed in $TARGET"
+  echo "Changes performed in $FSTAB_PATH"
 
 else
 
-  echo "No changes performed in $TARGET"
+  echo "No changes performed in $FSTAB_PATH"
 
 fi
