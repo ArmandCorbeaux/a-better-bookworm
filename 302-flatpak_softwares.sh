@@ -23,12 +23,12 @@
 
 # List of Flatpak applications to install
 FLATHUB_APPLICATION_LIST=(
-  "com.mattjakeman.ExtensionManager" # gnome-shell-extension-manager
-  "io.missioncenter.MissionCenter" # detailed resource monitoring
-  "org.gnome.Evince" # document viewer
-  "org.gnome.Loupe" # image viewer
-  "org.gnome.font-viewer" # font viewer
-  "
+  "com.mattjakeman.ExtensionManager"  # gnome-shell-extension-manager
+  "io.missioncenter.MissionCenter"    # detailed resource monitoring
+  "org.gnome.Evince"                  # document viewer
+  "org.gnome.Loupe"                   # image viewer
+  "org.gnome.font-viewer"             # font viewer
+  "org.gnome.Boxes"                   # Virtual Machines manager
 )
 
 # Iterate through the applications and install them

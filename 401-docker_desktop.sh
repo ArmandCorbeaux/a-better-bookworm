@@ -80,9 +80,6 @@ sudo apt-get install $temp_dir/*.deb -y
 # Clean up the temporary directory
 rm -Rf "$temp_dir"
 
-# Enable Docker-Desktop Services
-systemctl --user enable docker-desktop
-
 # Hide docker-desktop icon
 line_to_hide_desktop_icon="NoDisplay=true"
 

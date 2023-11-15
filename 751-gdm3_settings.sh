@@ -1,15 +1,30 @@
 #!/bin/bash
 
 ################################################################################
-# 19 - Custom Gnome 43 settings
+# 751 - Custom GDM3 settings
 ################################################################################
-
-# customize GDM3 settings to match gnome desktop theme
-echo "customize GDM3 login interface"
-
+#
+# Job :     Personalize GDM3 experience
+#
+# Author :  Armand CORBEAUX
+# Date :    2023-11-15
+#
+# Impact :  system
+#
+# Inputs :  SETTINGS
+# Outputs : FILE, CONFIG_FILE
+#
+# More informations :
+#           customize GDM3 settings to match gnome desktop theme
 
 # Define the file to be edited
-file="/etc/gdm3/greeter.dconf-defaults"
+FILE="/etc/gdm3/greeter.dconf-defaults"
+
+# Remove accessibility icon in GDM
+CONFIG_FILE="/usr/share/gdm/dconf/00-upstream-settings"
+SECTION="[org/gnome/desktop/a11y]"
+KEY="always-show-universal-access-status"
+NEW_VALUE="false"
 
 # Use sed to make the desired changes
 sudo sed -i '/\[org\/gnome\/desktop\/interface\]/a\
@@ -19,18 +34,9 @@ document-font-theme='\''Cantarell 11'\''\
 font-theme='\''Cantarell 11'\''\
 clock-show-seconds=true\
 clock-show-weekday=true\
-font-antialiasing='\''grayscale'\''\
-font-hinting='\''slight'\''\
-' "$file"
-
-
-# Disable accessibility icon in gdm
-
-# Define the config file, section, key, and new value
-config_file="/usr/share/gdm/dconf/00-upstream-settings"
-section="[org/gnome/desktop/a11y]"
-key="always-show-universal-access-status"
-new_value="false"
+font-antialiasing='\''rgba'\''\
+font-hinting='\''full'\''\
+' "$FILE"
 
 # Use sed to modify the key in the specific section of the config file
 sudo sed -i "/$section]/,/^$/ s/\($key\s*=\s*\).*/\1$new_value/" "$config_file"

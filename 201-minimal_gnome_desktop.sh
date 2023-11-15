@@ -25,11 +25,11 @@
 PACKAGES="gnome-shell gnome-console gnome-tweaks nautilus gnome-disk-utility"
 
 # Update packages list
-sudo apt-get update > /dev/null
+sudo apt-get update &> /dev/null
 
 echo "Install $PACKAGES"
 sudo apt-get install $PACKAGES -y
 
 # Garbage packages cleanup
 # Don't need 'gnome-shell-extension-prefs' as 'gnome-shell-extension-manager' will be installed and performs the same stuff
-sudo apt-get autoremove --purge gnome-shell-extension-prefs -y > /dev/null
+sudo apt-get autoremove --purge gnome-shell-extension-prefs -y &> /dev/null

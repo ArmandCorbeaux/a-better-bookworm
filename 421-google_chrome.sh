@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 403 - GOOGLE CHROME
+# 421 - GOOGLE CHROME
 ################################################################################
 #
 # Job :     Install Google Chrome and enable somes flags
@@ -11,13 +11,15 @@
 #
 # Impact :  system
 #
-# Inputs :  deb_urls, CHROME_FLAGS, FILE
-# Outputs : apt, /usr/share/applications/google-chrome.desktop
+# Inputs :  DEB_URLS, CHROME_FLAGS, FILE_PATH
+# Outputs : apt, FILE_PATH
 #
 # More informations :
 #           https://www.google.com/chrome/?platform=linux           
 #           CHROME_FLAGS aren't taken in account through /etc/environment.
-#           Choice is to modify the system desktop shortcut to add chrome flags
+#           Choice is to modify the system desktop shortcut to enable chrome flags
+# Bugs :
+#           2023-11-10 : Vulkan rendering has been removed as it causes visual issues with Microsoft 365 Online
 
 # Define the new value for CHROME_FLAGS
 CHROME_FLAGS="--ozone-platform=wayland --enable-features=UsePipeWire --enable-features=Vulkan"
@@ -45,4 +47,4 @@ sudo apt-get install $temp_dir/*.deb -y
 rm -Rf "$temp_dir"
 
 # Edit the Google Chrome desktop shortcut to add flags if not already in place
-sudo sed -i "/^Exec=/ {/ $CHROME_FLAGS/! s/$/ $CHROME_FLAGS/}" $FILE_PATH > /dev/null
+sudo sed -i "/^Exec=/ {/ $CHROME_FLAGS/! s/$/ $CHROME_FLAGS/}" $FILE_PATH &> /dev/null

@@ -29,8 +29,8 @@ if sudo grep -q "$dist_codename-backports" $TARGET; then
 else
 
     # Add the backports repository entry to sources.list
-    echo "deb http://deb.debian.org/debian $dist_codename-backports main non-free-firmware" | sudo tee -a $TARGET > /dev/null
-    echo "deb-src http://deb.debian.org/debian $dist_codename-backports main non-free-firmware" | sudo tee -a $TARGET.list > /dev/null
+    echo "deb http://deb.debian.org/debian $dist_codename-backports main non-free-firmware" | sudo tee -a $TARGET &> /dev/null
+    echo "deb-src http://deb.debian.org/debian $dist_codename-backports main non-free-firmware" | sudo tee -a $TARGET.list &> /dev/null
 
     echo "Changes performed in $TARGET"
 fi

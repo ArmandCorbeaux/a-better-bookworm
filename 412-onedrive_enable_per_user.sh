@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 403 - APT - ONE DRIVE ENABLE PER USER
+# 412 - APT - ONE DRIVE ENABLE PER USER
 ################################################################################
 #
 # Job :     Enable OneDrive service and add extension for current user
@@ -25,10 +25,6 @@ EXTENSION_URLS=(
   "https://extensions.gnome.org/extension-data/onedrivediegomerida.com.v11.shell-extension.zip"
 )
 
-EXTENSION_UUID=(
-  "onedrive@diegomerida.com"
-)
-
 # Add configuration to skip temporary files from sync
 mkdir -p ~/.config/onedrive
 echo "Remove a bunch of temporary files from sync with OneDrive client"
@@ -37,12 +33,16 @@ echo "skip_file = \"~*|.~*|*.tmp|*.swp|__*__|.venv|.vscode|log|logs\"" >> ~/.con
 # Enable OneDrive Service
 systemctl --user enable onedrive
 
-#Install OneDrive Gnome Desktop tray extension
+
+# Install each extension
 for url in "${EXTENSION_URLS[@]}"; do
   gnome-extensions install "$url"
 done
 
-# enable extensions
-for uuid in "${EXTENSION_UUID[@]}"; do
+# get gnome-shell-extension UUID
+extension_uuid=$(gnome-extensions list --user --disabled)
+
+# enable gnome shelle extensions
+for uuid in "${extension_uuid[@]}"; do
   gnome-extensions enable "$uuid"
 done

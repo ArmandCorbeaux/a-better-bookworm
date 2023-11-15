@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# 102 - CUSTOMIZE BOOT SPEED AND LOOK
+# 111 - CUSTOMIZE BOOT SPEED AND LOOK
 ################################################################################
 #
 # Job :     Change boot style and enable amd_pstate if AMD CPU
@@ -39,10 +39,10 @@ if [[ $(cat /proc/cpuinfo | grep vendor_id | uniq) == *"AuthenticAMD"* ]] && [[ 
 fi
 
 # Update packages list
-sudo apt update > /dev/null
+sudo apt update &> /dev/null
 
 # Install plymouth-themes
-sudo apt install plymouth-themes -y > /dev/null
+sudo apt install plymouth-themes -y &> /dev/null
 
 # Set theme to use OEM Bios Logo
 sudo plymouth-set-default-theme -R bgrt
@@ -61,4 +61,4 @@ else
 fi
 
 # Update GRUB settings to enable changes
-sudo update-grub > /dev/null
+sudo update-grub &> /dev/null
