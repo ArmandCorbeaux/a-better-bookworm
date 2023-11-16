@@ -39,7 +39,6 @@ FILE_PATH="/usr/share/applications/docker-desktop.desktop"
 # Function to extract the latest Docker Desktop deb package URL
 get_latest_docker_url() {
     local docker_url=$(curl -sL "https://docs.docker.com/desktop/install/debian/" | grep -oP 'https://desktop.docker.com/linux/main/amd64/docker-desktop-\d+\.\d+\.\d+-amd64.deb' | head -n 1)
-    echo "$docker_url"
 }
 
 # Define deb_urls files
@@ -72,12 +71,11 @@ temp_dir=$(mktemp -d)
 
 # Download deb_urls files
 for app in "${!DEB_URLS[@]}"; do
-    echo "${DEB_URLS[$app]}"
-    wget "${DEB_URLS[$app]}" -O "$temp_dir/${app// /_}.deb"
+    wget "${DEB_URLS[$app]}" -O "$temp_dir/${app// /_}.deb" -q --show-progress
 done
 
 # Install deb packages
-sudo apt-get install $temp_dir/*.deb -y
+sudo apt-get install $temp_dir/*.deb -y &> /dev/null
 
 # Clean up the temporary directory
 rm -Rf "$temp_dir"
@@ -87,5 +85,5 @@ line_to_hide_desktop_icon="NoDisplay=true"
 
 # Hide Docker-Desktop shortcut if it's not already done
 if ! grep -q "NoDisplay=true" "$FILE_PATH"; then
-    echo "$line_to_hide_desktop_icon" | sudo tee -a "$FILE_PATH"
+    echo "$line_to_hide_desktop_icon" | sudo tee -a "$FILE_PATH" &> /dev/null
 fi

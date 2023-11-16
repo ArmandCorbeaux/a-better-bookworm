@@ -37,11 +37,11 @@ temp_dir=$(mktemp -d)
 
 # Download deb_urls files
 for app in "${!DEB_URLS[@]}"; do
-    wget "${DEB_URLS[$app]}" -O "$temp_dir/${app// /_}.deb"
+    wget "${DEB_URLS[$app]}" -O "$temp_dir/${app// /_}.deb" -q --show-progress
 done
 
 # Install deb packages
-sudo apt-get install $temp_dir/*.deb -y
+sudo apt-get install $temp_dir/*.deb -y &> /dev/null
 
 # Clean up the temporary directory
 rm -Rf "$temp_dir"

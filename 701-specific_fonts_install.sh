@@ -51,7 +51,7 @@ else
 fi
 
 # Download Victor Mono Font with wget
-wget $VICTORMONO_URL
+wget $VICTORMONO_URL  -q --show-progress
 
 # Now extract the fonts
 unzip FiraCode.zip -d FiraCode

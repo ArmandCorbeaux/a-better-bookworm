@@ -31,7 +31,7 @@ echo "Remove a bunch of temporary files from sync with OneDrive client"
 echo "skip_file = \"~*|.~*|*.tmp|*.swp|__*__|.venv|.vscode|log|logs|.git\"" >> ~/.config/onedrive/config
 
 # Enable OneDrive Service
-systemctl --user enable onedrive
+systemctl --user enable onedrive &> /dev/null
 
 
 # Install each extension

@@ -42,7 +42,7 @@ add_repository() {
 add_repository "onedrive" "$REPOSITORY_KEY" "$REPOSITORY_URL" "$(dpkg --print-architecture)"
 
 # Update packages list
-sudo apt-get update > /dev/null
+sudo apt-get update &> /dev/null
 
 # Install onedrive
-sudo apt-get install onedrive -y
+sudo apt-get install onedrive -y &> /dev/null

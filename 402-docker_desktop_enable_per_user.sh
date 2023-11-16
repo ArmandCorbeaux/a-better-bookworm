@@ -23,4 +23,4 @@
 #           It's a per-user service
 
 # Enable Docker-Desktop Services
-systemctl --user enable docker-desktop
+systemctl --user enable docker-desktop &> /dev/null
