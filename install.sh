@@ -91,6 +91,6 @@ done
 # END OF OPERATIONS
 rm -f "./install.sh"
 
-echo "System will reboot"
-sleep 5
-sudo reboot
+#echo "System will reboot"
+#sleep 5
+#sudo reboot
