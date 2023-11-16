@@ -86,6 +86,8 @@ for SCRIPT in "${LIST_OF_SCRIPTS[@]}"; do
     wget "$URL/$SCRIPT"
     bash "./$SCRIPT"
     rm -f "./$SCRIPT"
+# debug pause
+    read -s -n 1
 done
 
 # END OF OPERATIONS
