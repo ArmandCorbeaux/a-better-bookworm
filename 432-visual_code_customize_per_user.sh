@@ -61,10 +61,6 @@ VSCODE_EXTENSIONS=(
     ms-python.python
     ms-python.vscode-pylance
     ms-toolsai.jupyter
-    ms-toolsai.jupyter-keymap
-    ms-toolsai.jupyter-renderers
-    ms-toolsai.vscode-jupyter-cell-tags
-    ms-toolsai.vscode-jupyter-slideshow
     njpwerner.autodocstring
     ms-azuretools.vscode-docker
     VisualStudioExptTeam.intellicode-api-usage-examples
