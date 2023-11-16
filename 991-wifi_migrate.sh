@@ -38,11 +38,11 @@ ssid=$(sudo grep -i 'wpa-ssid' /etc/network/interfaces | awk '{print $2}')
 password=$(sudo grep -i 'wpa-psk' /etc/network/interfaces | awk '{print $2}')
 
 # Shutdown Wi-Fi connection
-sudo ifdown $wifi_interface
+sudo ifdown $wifi_interface &> /dev/null
 
 # Clean /etc/network/interfaces file with only loopback configuration
-echo "auto lo" | sudo tee /etc/network/interfaces
-echo "iface lo inet loopback" | sudo tee -a /etc/network/interfaces
+echo "auto lo" | sudo tee /etc/network/interfaces &> /dev/null
+echo "iface lo inet loopback" | sudo tee -a /etc/network/interfaces &> /dev/null
 
 # Restart services
 sudo service wpa_supplicant restart
@@ -54,9 +54,14 @@ sudo nmcli device wifi connect $ssid password $password ifname $wifi_interface
 
 # Undo changes if Wi-Fi migration has failed
 if ! sudo nmcli device wifi show &> /dev/null; then
-    echo "Wi-Fi interface not available. Back to the initial state."
-    sudo mv /etc/network/interfaces.backup /etc/network/interfaces
-    exit 1
+    # Check for Ethernet connection
+    if ! sudo nmcli device show | grep -q ethernet; then
+        echo "Neither Wi-Fi nor Ethernet interface available. Back to the initial state."
+        sudo mv /etc/network/interfaces.backup /etc/network/interfaces
+        exit 1
+    else
+        echo "Ethernet connection available. Skipping rollback."
+    fi
 fi
 
 # If Wi-Fi migration is successful, remove backup file
