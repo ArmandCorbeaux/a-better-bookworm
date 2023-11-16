@@ -52,3 +52,5 @@ sudo sed -i "s/#\s*PRIORITY=.*/PRIORITY=$ZRAM_PRIORITY/" $ZRAM_TARGET
 for value in "${SYSCTL_VALUES[@]}"; do
   echo "$value" | sudo tee -a $SYSCTL_TARGET &> /dev/null
 done
+
+echo "zRAM enabled."

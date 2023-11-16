@@ -29,6 +29,7 @@ execute_commands() {
     if [ $# -eq 0 ]; then
         return
     fi
+    echo "Install $1"
     sudo apt-get install -y $1 &> /dev/null
     shift
     execute_commands "$@"
