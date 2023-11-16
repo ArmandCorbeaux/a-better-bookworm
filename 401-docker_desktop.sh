@@ -34,7 +34,7 @@ DISTRIBUTION_KEYRING_PATH="/usr/share/keyrings"
 DISTRIBUTION_SOURCES_LIST_PATH="/etc/apt/sources.list.d"
 
 # The shortcut to edit
-FILE_PATH=/usr/share/applications/docker-desktop.desktop
+FILE_PATH="/usr/share/applications/docker-desktop.desktop"
 
 # Function to extract the latest Docker Desktop deb package URL
 get_latest_docker_url() {
