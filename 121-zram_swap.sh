@@ -38,10 +38,10 @@ ZRAM_TARGET="/etc/default/zramswap"
 SYSCTL_TARGET="/etc/sysctl.conf"
 
 # Update packages list
-sudo apt update
+sudo apt update &> /dev/null
 
 # Install ZRAM
-sudo apt install zram-tools -y
+sudo apt install zram-tools -y &> /dev/null
 
 # ZRAM - uncomment and modify the values
 sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ZRAM_ALGO\"/" $ZRAM_TARGET
@@ -50,5 +50,5 @@ sudo sed -i "s/#\s*PRIORITY=.*/PRIORITY=$ZRAM_PRIORITY/" $ZRAM_TARGET
 
 # Append values to sysctl.conf
 for value in "${SYSCTL_VALUES[@]}"; do
-  echo "$value" | sudo tee -a $SYSCTL_TARGET
+  echo "$value" | sudo tee -a $SYSCTL_TARGET &> /dev/null
 done
