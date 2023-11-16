@@ -36,10 +36,10 @@ SERVICE_FILE_PATH="/etc/systemd/system/mglru.service"
 echo "$SERVICE_FILE_CONTENT" | sudo tee "$SERVICE_FILE_PATH" &> /dev/null
 
 # Reload systemd to recognize the new service
-sudo systemctl daemon-reload
+sudo systemctl daemon-reload &> /dev/null
 
 # Enable and start the mglru service
-sudo systemctl enable mglru.service
-sudo systemctl start mglru.service
+sudo systemctl enable mglru.service &> /dev/null
+sudo systemctl start mglru.service &> /dev/null
 
 echo "mglru.service created and enabled."
