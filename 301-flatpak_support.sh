@@ -24,13 +24,13 @@
 #           If available, users have the choice between deb ou flatpak packages
 
 # Update packages list
-sudo apt update
+sudo apt update &> /dev/null
 
 # Install flatpak gnome-software plugin
-sudo apt install gnome-software-plugin-flatpak -y
+sudo apt install gnome-software-plugin-flatpak -y &> /dev/null
 
 # Add Flahub repository
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Fluch content of the repository
 flatpak update
