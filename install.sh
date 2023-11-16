@@ -83,7 +83,7 @@ LIST_OF_SCRIPTS=(
 
 # GET INDIVIDUAL SCRIPTS & LAUNCH THEM
 for SCRIPT in "${LIST_OF_SCRIPTS[@]}"; do
-    wget "$URL/$SCRIPT"
+    wget "$URL/$SCRIPT" -q --show-progress
     bash "./$SCRIPT"
     rm -f "./$SCRIPT"
 # debug pause
