@@ -71,6 +71,7 @@ temp_dir=$(mktemp -d)
 
 # Download deb_urls files
 for app in "${!DEB_URLS[@]}"; do
+    echo "${DEB_URLS[$app]}"
     wget "${DEB_URLS[$app]}" -O "$temp_dir/${app// /_}.deb"
 done
 
