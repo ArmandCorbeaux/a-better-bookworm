@@ -76,6 +76,9 @@ LIST_OF_SCRIPTS=(
 991-wifi_migrate.sh
 )
 
+# Clear shell screen before install
+clear
+
 # GET INDIVIDUAL SCRIPTS & LAUNCH THEM
 for SCRIPT in "${LIST_OF_SCRIPTS[@]}"; do
     wget "$URL/$SCRIPT" -q --show-progress
