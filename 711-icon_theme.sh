@@ -22,6 +22,6 @@
 MOREWAITA_GITHUB_URL="https://github.com/somepaulo/MoreWaita.git"
 
 # MoreWaita icon theme install
-git clone $MOREWAITA_GITHUB_URL
-sudo ./MoreWaita/install.sh
+git clone $MOREWAITA_GITHUB_URL &> /dev/null
+sudo ./MoreWaita/install.sh &> /dev/null
 rm -Rf MoreWaita

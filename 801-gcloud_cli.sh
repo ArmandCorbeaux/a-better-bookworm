@@ -41,6 +41,6 @@ add_repository() {
 add_repository "google-cloud-sdk" "$REPOSITORY_KEY" "$REPOSITORY_URL" "$(dpkg --print-architecture)"
 
 # Update packages list
-sudo apt-get update > /dev/null
+sudo apt-get update &> /dev/null
 
-sudo apt-get install gcloud -y
+sudo apt-get install google-cloud-cli -y &> /dev/null

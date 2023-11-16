@@ -54,8 +54,8 @@ fi
 wget $VICTORMONO_URL  -q --show-progress
 
 # Now extract the fonts
-unzip FiraCode.zip -d FiraCode
-unzip VictorMonoAll.zip -d VictorMonoAll
+unzip FiraCode.zip -d FiraCode &> /dev/null
+unzip VictorMonoAll.zip -d VictorMonoAll &> /dev/null
 
 # Move the fonts in the right place
 mv VictorMonoAll/TTF VictorMono

@@ -41,4 +41,4 @@ font-hinting='\''full'\''\
 # Use sed to modify the key in the specific section of the config file
 sudo sed -i "/$SECTION]/,/^$/ s/\($KEY\s*=\s*\).*/\1$NEW_VALUE/" "$CONFIG_FILE"
 
-sudo dpkg-reconfigure gdm3
+sudo dpkg-reconfigure gdm3 &> /dev/null
