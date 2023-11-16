@@ -33,7 +33,7 @@ WantedBy=default.target
 SERVICE_FILE_PATH="/etc/systemd/system/mglru.service"
 
 # Save the service file content to the specified location
-echo "$SERVICE_FILE_CONTENT" | sudo tee "$SERVICE_FILE_PATH" > &/dev/null
+echo "$SERVICE_FILE_CONTENT" | sudo tee "$SERVICE_FILE_PATH" &> /dev/null
 
 # Reload systemd to recognize the new service
 sudo systemctl daemon-reload
