@@ -18,6 +18,7 @@
 #           https://docs.kernel.org/admin-guide/mm/multigen_lru.html
 #           Settings must be applied as each boot
 
+
 SERVICE_FILE_CONTENT="[Unit]
 Description=Multi-Gen LRU Enabler Service
 ConditionPathExists=/sys/kernel/mm/lru_gen/enabled
@@ -32,14 +33,26 @@ WantedBy=default.target
 
 SERVICE_FILE_PATH="/etc/systemd/system/mglru.service"
 
-# Save the service file content to the specified location
-echo "$SERVICE_FILE_CONTENT" | sudo tee "$SERVICE_FILE_PATH" &> /dev/null
+# Function to check if a file contains a specific content
+file_contains_content() {
+  local file="$1"
+  local content="$2"
+  grep -q "$content" "$file"
+}
 
-# Reload systemd to recognize the new service
-sudo systemctl daemon-reload &> /dev/null
+# Check if the service file needs to be updated
+if ! file_contains_content "$SERVICE_FILE_PATH" "$SERVICE_FILE_CONTENT"; then
+  # Save the service file content to the specified location
+  echo "$SERVICE_FILE_CONTENT" | sudo tee "$SERVICE_FILE_PATH" &> /dev/null
 
-# Enable and start the mglru service
-sudo systemctl enable mglru.service &> /dev/null
-sudo systemctl start mglru.service &> /dev/null
+  # Reload systemd to recognize the new service
+  sudo systemctl daemon-reload &> /dev/null
 
-echo "mglru.service created and enabled."
+  # Enable and start the mglru service
+  sudo systemctl enable mglru.service &> /dev/null
+  sudo systemctl start mglru.service &> /dev/null
+
+  echo "mglru.service created and enabled."
+else
+  echo "mglru.service is already up to date."
+fi

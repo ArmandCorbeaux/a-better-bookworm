@@ -4,10 +4,10 @@
 # 121 - ADD ZRAMSWAP
 ################################################################################
 #
-# Job :     Change boot style and enable amd_pstate if AMD CPU
+# Job :     Enable zRAM as compressed memory swap space
 #
 # Author :  Armand CORBEAUX
-# Date :    2023-11-07
+# Date :    2023-11-15
 #
 # Impact :  system
 #
@@ -16,8 +16,8 @@
 # Outputs : ZRAM_TARGET, SYSCTL_TARGET
 #
 # More informations :
-#   https://en.wikipedia.org/wiki/Zram
-
+#           https://en.wikipedia.org/wiki/Zram
+#           Settings are very aggresive
 
 # Values in zramswap
 ZRAM_ALGO="zstd"
@@ -37,20 +37,39 @@ SYSCTL_VALUES=(
 ZRAM_TARGET="/etc/default/zramswap"
 SYSCTL_TARGET="/etc/sysctl.conf"
 
-# Update packages list
-sudo apt update &> /dev/null
+# Function to check if a file contains a specific line
+file_contains_line() {
+  local file="$1"
+  local line="$2"
+  grep -q "^$line$" "$file"
+}
 
-# Install ZRAM
-sudo apt install zram-tools -y &> /dev/null
+# Function to update a line in a file or append it if not present
+update_or_append_line() {
+  local file="$1"
+  local line="$2"
+  if file_contains_line "$file" "$line"; then
+    echo "Line already exists in $file: $line"
+  else
+    echo "$line" | sudo tee -a "$file" &> /dev/null
+    echo "Added line to $file: $line"
+  fi
+}
 
-# ZRAM - uncomment and modify the values
-sudo sed -i "s/#\s*ALGO=.*/ALGO=\"$ZRAM_ALGO\"/" $ZRAM_TARGET
-sudo sed -i "s/#\s*PERCENT=.*/PERCENT=$ZRAM_PERCENT/" $ZRAM_TARGET
-sudo sed -i "s/#\s*PRIORITY=.*/PRIORITY=$ZRAM_PRIORITY/" $ZRAM_TARGET
+# Check and install ZRAM
+if ! command -v zramctl &> /dev/null; then
+  sudo apt update &> /dev/null
+  sudo apt install zram-tools -y &> /dev/null
+fi
 
-# Append values to sysctl.conf
+# Check and update ZRAM settings
+update_or_append_line "$ZRAM_TARGET" "ALGO=\"$ZRAM_ALGO\""
+update_or_append_line "$ZRAM_TARGET" "PERCENT=$ZRAM_PERCENT"
+update_or_append_line "$ZRAM_TARGET" "PRIORITY=$ZRAM_PRIORITY"
+
+# Check and update sysctl.conf
 for value in "${SYSCTL_VALUES[@]}"; do
-  echo "$value" | sudo tee -a $SYSCTL_TARGET &> /dev/null
+  update_or_append_line "$SYSCTL_TARGET" "$value"
 done
 
 echo "zRAM enabled."
