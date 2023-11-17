@@ -38,8 +38,13 @@ FILE_PATH="/usr/share/applications/docker-desktop.desktop"
 
 # Function to extract the latest Docker Desktop deb package URL
 get_latest_docker_url() {
-    local docker_url=$(curl -sL "https://docs.docker.com/desktop/install/debian/" | grep -oP 'https://desktop.docker.com/linux/main/amd64/docker-desktop-\d+\.\d+\.\d+-amd64.deb' | head -n 1)
-    echo "$docker_url"
+    local docker_url=$(curl -sL --retry 5 --retry-delay 15 "https://docs.docker.com/desktop/install/debian/" | grep -oP 'https://desktop.docker.com/linux/main/amd64/docker-desktop-\d+\.\d+\.\d+-amd64.deb' | head -n 1)
+    if [ $? -eq 0 ]; then
+        echo "$docker_url"
+    else
+        echo "Error: could not get the latest Docker Desktop deb package URL"
+        exit 1
+    fi
 }
 
 # Define deb_urls files
