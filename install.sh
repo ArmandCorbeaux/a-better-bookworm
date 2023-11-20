@@ -86,7 +86,7 @@ for SCRIPT in "${LIST_OF_SCRIPTS[@]}"; do
     bash "./$SCRIPT"
     rm -f "./$SCRIPT"
 # debug pause
-    read -s -n 1 -p "/!\ ... press a key ..."
+#    read -s -n 1 -p "/!\ ... press a key ..."
 done
 
 # END OF OPERATIONS
