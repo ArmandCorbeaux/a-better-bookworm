@@ -38,7 +38,7 @@ for url in "${EXTENSION_URLS[@]}"; do
 done
 
 # get gnome-shell-extension UUID
-extension_uuid=$(gnome-extensions list --user --disabled)
+extension_uuid=$(gnome-extensions list --user)
 
 # enable gnome shelle extensions
 for uuid in "${extension_uuid[@]}"; do
