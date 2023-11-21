@@ -39,9 +39,11 @@ done
 
 # get gnome-shell-extension UUID
 extension_uuid=$(gnome-extensions list --user)
+echo "$extension_uuid"
 
 # enable gnome shelle extensions
 for uuid in "${extension_uuid[@]}"; do
+  echo "$uuid"
   gnome-extensions enable "$uuid"
 done
 
