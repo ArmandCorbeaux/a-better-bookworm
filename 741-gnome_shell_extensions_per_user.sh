@@ -43,9 +43,9 @@ echo "$extension_uuid"
 
 # enable gnome shelle extensions
 for uuid in "${extension_uuid[@]}"; do
-  echo $uuid
-  gnome-extensions enable $uuid
-  gnome-extensions info $uuid
+  echo "$uuid"
+  gnome-extensions enable "$uuid"
+  gnome-extensions info "$uuid"
 done
 
 # librabry needed to access Bing Wallpaper exntension's settings
