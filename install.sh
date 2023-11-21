@@ -31,18 +31,18 @@ LIST_OF_SCRIPTS=(
 432-visual_code_customize_per_user.sh
 441-steam_client.sh
 442-steam_protonge_per_user.sh
-451-oracle_java_jdk.sh
+#451-oracle_java_jdk.sh
 461-minecraft_client.sh
 701-specific_fonts_install.sh
 711-icon_theme.sh
 721-cursor-theme.sh
 731-gnome_shell_settings_per_user.sh
+732-gnome-shortcut_organization_per_user.sh
 741-gnome_shell_extensions_per_user.sh
 742-gnome_extensions_settings_per_user.sh
 751-gdm3_settings.sh
-801-gcloud_cli.sh
+#801-gcloud_cli.sh
 991-wifi_migrate.sh
-999-gnome-shortcut_organization_per_user.sh
 )
 
 ################################################################################
@@ -92,6 +92,6 @@ done
 # END OF OPERATIONS
 rm -f "./install.sh"
 
-#echo "System will reboot"
-#sleep 5
-#sudo reboot
+echo "System will reboot"
+sleep 5
+sudo reboot

@@ -63,3 +63,5 @@ done
 
 # Purpose Flatpak apps first in Gnome-Software
 dconf write /org/gnome/software/packaging-format-preference "['flatpak', 'deb']"
+# Apply settings
+dconf update

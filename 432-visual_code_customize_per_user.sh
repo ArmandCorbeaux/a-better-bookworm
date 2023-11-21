@@ -74,5 +74,5 @@ echo "$VSCODE_SETTINGS" > "$FILE_PATH"
 
 # Install VSCode extensions
 for extension in "${VSCODE_EXTENSIONS[@]}"; do
-    code --install-extension "$extension"
+    code --install-extension "$extension" &> /dev/null
 done
