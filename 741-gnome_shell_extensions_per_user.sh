@@ -37,12 +37,11 @@ for url in "${EXTENSION_URLS[@]}"; do
   gnome-extensions install "$url"
 done
 
-# get gnome-shell-extension UUID
-extension_uuid=$(gnome-extensions list --user)
-echo "$extension_uuid"
+# get gnome-shell-extension UUIDs
+extension_uuids=($(gnome-extensions list --user | grep -oP "(?<=\s)[^\s]+"))
 
-# enable gnome shelle extensions
-for uuid in "${extension_uuid[@]}"; do
+# enable gnome shell extensions
+for uuid in "${extension_uuids[@]}"; do
   echo "$uuid"
   gnome-extensions enable "$uuid"
   gnome-extensions info "$uuid"
