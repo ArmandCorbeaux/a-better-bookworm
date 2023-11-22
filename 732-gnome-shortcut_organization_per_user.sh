@@ -36,6 +36,3 @@ dconf write /org/gnome/shell/app-picker-layout "[{ \
 'steam.desktop': <{'position': <6>}>, \
 'minecraft-launcher.desktop': <{'position': <7>}>
 }]"
-
-#Apply updates
-dconf update
