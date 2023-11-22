@@ -65,6 +65,3 @@ apply_settings() {
 apply_settings "dash-to-dock" "${DASH_TO_DOCK_SETTINGS[@]}"
 apply_settings "bingwallpaper" "${BINGWALPAPER_SETTINGS[@]}"
 apply_settings "tiling-assistant" "${TILING_ASSISTANT_SETTINGS[@]}"
-
-# Apply changes
-dconf update
