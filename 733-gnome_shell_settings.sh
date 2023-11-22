@@ -1,5 +1,5 @@
 #!/bin/bash
-FILE_PATH="/usr/share/glib-2.0/schemas/10_global-gnome-shell.gschema.override"
+FILE_PATH="/usr/share/glib-2.0/schemas/20_global-gnome-shell.gschema.override"
 
 SETTINGS=$(cat <<EOF
 [org/gnome/desktop/app-folders/folders/Utilities]

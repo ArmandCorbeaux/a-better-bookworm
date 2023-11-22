@@ -1,5 +1,5 @@
 #!/bin/bash
-FILE_PATH="/usr/share/glib-2.0/schemas/10_gnome-shell-extensions-settings.gschema.override"
+FILE_PATH="/usr/share/glib-2.0/schemas/20_gnome-shell-extensions-settings.gschema.override"
 
 SETTINGS=$(cat <<EOF
 [org/gnome/shell]
