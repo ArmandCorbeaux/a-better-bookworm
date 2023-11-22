@@ -41,7 +41,7 @@ SETTINGS=(
   "org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'"
   "org.gnome.mutter center-new-windows true"
   "org.gnome.mutter edge-tiling true"
-  "org.gnome.nautilus.icon-view default-zoom-level small"
+  "org.gnome.nautilus.icon-view default-zoom-level 'small'"
   "org.gnome.nautilus.preferences show-hidden-files true"
   "org.gnome.shell.weather automatic-location true"
   "org.gnome.system.location enabled true"
@@ -63,5 +63,3 @@ done
 
 # Purpose Flatpak apps first in Gnome-Software
 dconf write /org/gnome/software/packaging-format-preference "['flatpak', 'deb']"
-# Apply settings
-dconf update
