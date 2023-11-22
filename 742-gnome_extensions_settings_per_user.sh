@@ -22,11 +22,11 @@ EXTENSION_PATH="/org/gnome/shell/extensions"
 # Dash to Dock settings
 DASH_TO_DOCK_SETTINGS=(
   "hot-keys=false"
-  "intellihide-mode='ALL_WINDOWS'"
-  "running-indicator-style='DASHES'"
+  "intellihide-mode=['ALL_WINDOWS']"
+  "running-indicator-style=['DASHES']"
   "clock-action='focus-minimize-or-previews'"
   "dash-max-icon-size=64"
-)
+  )
 
 # Bing Wallpaper settings
 BINGWALPAPER_SETTINGS=(
@@ -51,9 +51,7 @@ TILING_ASSISTANT_SETTINGS=(
 # Function to apply settings for an extension
 apply_settings() {
   local extension=$1
-  local settings_array=$2
-
-  for setting in "${settings_array[@]}"; do
+  for setting in "$@"; do
     key="${setting%%=*}"  # Extracts the part before the equal sign
     value="${setting#*=}"  # Extracts the part after the equal sign
     dconf write "$EXTENSION_PATH/$extension/$key" "$value"

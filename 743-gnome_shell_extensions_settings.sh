@@ -7,8 +7,8 @@ enabled-extensions=@as ['BingWallpaper@ineffable-gmail.com', 'onedrive@diegomeri
 
 [org/gnome/shell/extensions/dash-to-dock]
 hot-keys=false
-intellihide-mode='ALL_WINDOWS'
-running-indicator-style='DASHES'
+intellihide-mode=['ALL_WINDOWS']
+running-indicator-style=[]'DASHES']
 clock-action='focus-minimize-or-previews'
 dash-max-icon-size=64
 

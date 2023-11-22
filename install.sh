@@ -37,12 +37,12 @@ LIST_OF_SCRIPTS=(
 711-icon_theme.sh
 721-cursor-theme.sh
 751-gdm3_settings.sh
-733-gnome_shell_settings.sh
-743-gnome_shell_extensions_settings.sh
-#731-gnome_shell_settings_per_user.sh
-#732-gnome-shortcut_organization_per_user.sh
+#733-gnome_shell_settings.sh
+#743-gnome_shell_extensions_settings.sh
+731-gnome_shell_settings_per_user.sh
+732-gnome-shortcut_organization_per_user.sh
 741-gnome_shell_extensions_per_user.sh
-#742-gnome_extensions_settings_per_user.sh
+742-gnome_extensions_settings_per_user.sh
 #801-gcloud_cli.sh
 991-wifi_migrate.sh
 )
