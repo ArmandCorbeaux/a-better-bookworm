@@ -42,7 +42,7 @@ extension_uuids=($(gnome-extensions list --user))
 
 # enable gnome shell extensions
 for uuid in "${extension_uuids[@]}"; do
-  eval gnome-extensions enable "$uuid"
+  gnome-extensions enable "$uuid"
 done
 
 # librabry needed to access Bing Wallpaper exntension's settings
