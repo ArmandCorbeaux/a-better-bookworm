@@ -1,15 +1,16 @@
 #!/bin/bash
-FILE_PATH="/usr/share/glib-2.0/schemas/20_gnome-shell-extensions-settings.gschema.override"
+SETTINGS_PATH="/etc/dconf/db/system-wide.d"
+FILE_NAME="01_gnome_shell_extensions_settings"
 
 SETTINGS=$(cat <<EOF
 [org/gnome/shell]
-enabled-extensions=@as ['BingWallpaper@ineffable-gmail.com', 'onedrive@diegomerida.com', 'dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com', 'tiling-assistant@leleat-on-github', 'caffeine@patapon.info']
+enabled-extensions=['BingWallpaper@ineffable-gmail.com', 'onedrive@diegomerida.com', 'dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com', 'tiling-assistant@leleat-on-github', 'caffeine@patapon.info']
 
 [org/gnome/shell/extensions/dash-to-dock]
 hot-keys=false
 intellihide-mode=['ALL_WINDOWS']
-running-indicator-style=[]'DASHES']
-clock-action='focus-minimize-or-previews'
+running-indicator-style=['DASHES']
+click-action='focus-minimize-or-previews'
 dash-max-icon-size=64
 
 [org/gnome/shell/extensions/bingwallpaper]
@@ -30,6 +31,8 @@ tile-maximize=@as []
 EOF
 )
 
-echo "$SETTINGS" | sudo tee "$FILE_PATH"
+sudo mkdir -p "$PATH"
 
-sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+echo "$SETTINGS" | sudo tee "$SETTINGS_PATH/$FILE_NAME"
+
+sudo dconf update

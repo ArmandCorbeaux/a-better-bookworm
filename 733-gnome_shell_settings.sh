@@ -1,9 +1,10 @@
 #!/bin/bash
-FILE_PATH="/usr/share/glib-2.0/schemas/20_global-gnome-shell.gschema.override"
+SETTINGS_PATH="/etc/dconf/db/system-wide.d"
+FILE_NAME="00_gnome_shell_settings"
 
 SETTINGS=$(cat <<EOF
 [org/gnome/desktop/app-folders/folders/Utilities]
-apps=@as ['org.gnome.Boxes.desktop', 'org.gnome.Evince.desktop', 'org.gnome.Loupe.desktop', 'org.gnome.baobab.desktop', 'org.gnome.font-viewer.desktop', 'org.gnome.Console.desktop', 'yelp.desktop', 'nm-connection-editor.desktop', 'im-config.desktop', 'software-properties-gtk.desktop', 'org.gnome.DiskUtility.desktop']
+apps=['org.gnome.Boxes.desktop', 'org.gnome.Evince.desktop', 'org.gnome.Loupe.desktop', 'org.gnome.baobab.desktop', 'org.gnome.font-viewer.desktop', 'org.gnome.Console.desktop', 'yelp.desktop', 'nm-connection-editor.desktop', 'im-config.desktop', 'software-properties-gtk.desktop', 'org.gnome.DiskUtility.desktop']
 
 [org/gnome/desktop/calendar]
  show-weekdate=true
@@ -48,7 +49,7 @@ default-zoom-level='small'
 show-hidden-files=true
 
 [org/gnome/shell]
-favorite-apps=@as ['google-chrome.desktop', 'code.desktop', 'org.gnome.Console.desktop', 'org.gnome.Nautilus.desktop']
+favorite-apps=['google-chrome.desktop', 'code.desktop', 'org.gnome.Console.desktop', 'org.gnome.Nautilus.desktop']
 app-picker-layout=[{'org.gnome.Software.desktop': <{'position': <0>}>, 'com.mattjakeman.ExtensionManager.desktop': <{'position': <1>}>,'org.gnome.tweaks.desktop': <{'position': <2>}>,'org.gnome.Settings.desktop': <{'position': <3>}>,'Utilities': <{'position': <4>}>,'io.missioncenter.MissionCenter.desktop': <{'position': <5>}>,'steam.desktop': <{'position': <6>}>,'minecraft-launcher.desktop': <{'position': <7>}>}]
 
 [org/gnome/shell/weather]
@@ -57,23 +58,29 @@ automatic-location=true
 [org/gnome/software]
 enable-repos-dialog=false
 show-ratings=true
-packaging-format-preference=@as ['flatpak', 'deb']
+packaging-format-preference=['flatpak', 'deb']
 
 [org/gnome/system/location]
 enabled=true
 
-[org/gtk/Settings/FileChooser]
+[org/gtk/settings/file-chooser]
 sort-directories-first=true
 show-hidden=true
 sort-order='ascending'
+sort-column='name'
+type-format='category'
 
-[org/gtk/gtk4/Settings/FileChooser]
+[org/gtk/gtk4/settings/file-chooser]
 sort-directories-first=true
 show-hidden=true
 sort-order='ascending'
+sort-column='name'
+type-format='category'
 EOF
 )
 
-echo "$SETTINGS" | sudo tee "$FILE_PATH"
+sudo mkdir -p "$PATH"
 
-sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+echo "$SETTINGS" | sudo tee "$SETTINGS_PATH/$FILE_NAME"
+
+sudo dconf update
