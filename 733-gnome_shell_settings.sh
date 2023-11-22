@@ -1,5 +1,5 @@
 #!/bin/bash
-FILE_PATH="/etc/dconf/db/ibus.d/733-gnome_shell_settings"
+FILE_PATH="/usr/share/glib-2.0/schemas/10_global-gnome-shell.gschema.override"
 
 SETTINGS=$(cat <<EOF
 [org/gnome/desktop/app-folders/folders/Utilities]
@@ -76,4 +76,4 @@ EOF
 
 echo "$SETTINGS" | sudo tee "$FILE_PATH"
 
-sudo dconf update
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
