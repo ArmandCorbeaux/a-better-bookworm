@@ -34,7 +34,7 @@ EXTENSION_URLS=(
 
 # Install each extension
 for url in "${EXTENSION_URLS[@]}"; do
-  sudo gnome-extensions install "$url"
+  gnome-extensions install "$url"
 done
 
 # librabry needed to access Bing Wallpaper exntension's settings
