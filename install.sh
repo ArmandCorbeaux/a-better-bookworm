@@ -9,43 +9,40 @@ BRANCH="dev"
 URL="https://github.com/ArmandCorbeaux/better-bookworm/raw/$BRANCH"
 
 LIST_OF_SCRIPTS=(
-001-repo_backports.sh
-002-repo_contrib_nonfree.sh
-003-repo_disable_src.sh
-101-btrfs_fstab.sh
-111-boot_tweak.sh
-121-zram_swap.sh
-131-multigen_lru.sh
-201-minimal_gnome_desktop.sh
-211-printer_support.sh
-221-misc_tools.sh
-231-python_tools.sh
-301-flatpak_support.sh
-302-flatpak_softwares.sh
-401-docker_desktop.sh
-402-docker_desktop_enable_per_user.sh
-411-onedrive_install.sh
-412-onedrive_enable_per_user.sh
-421-google_chrome.sh
-431-visual_code.sh
-432-visual_code_customize_per_user.sh
-441-steam_client.sh
-442-steam_protonge_per_user.sh
-#451-oracle_java_jdk.sh
-461-minecraft_client.sh
-701-specific_fonts_install.sh
-711-icon_theme.sh
-721-cursor-theme.sh
-730-dconf_db_system_wide.sh
-733-gnome_shell_settings.sh
-743-gnome_shell_extensions_settings.sh
-#731-gnome_shell_settings_per_user.sh
-#732-gnome-shortcut_organization_per_user.sh
-741-gnome_shell_extensions_per_user.sh
-#742-gnome_extensions_settings_per_user.sh
-#801-gcloud_cli.sh
-751-gdm3_settings.sh
-991-wifi_migrate.sh
+    001-repo_backports.sh
+    002-repo_contrib_nonfree.sh
+    003-repo_disable_src.sh
+    101-btrfs_fstab.sh
+    111-boot_tweak.sh
+    121-zram_swap.sh
+    131-multigen_lru.sh
+    201-minimal_gnome_desktop.sh
+    211-printer_support.sh
+    221-misc_tools.sh
+    231-python_tools.sh
+    301-flatpak_support.sh
+    302-flatpak_softwares.sh
+    401-docker_desktop.sh
+    402-docker_desktop_enable_per_user.sh
+    411-onedrive_install.sh
+    412-onedrive_enable_per_user.sh
+    421-google_chrome.sh
+    431-visual_code.sh
+    432-visual_code_customize_per_user.sh
+    441-steam_client.sh
+    442-steam_protonge_per_user.sh
+    #451-oracle_java_jdk.sh
+    461-minecraft_client.sh
+    701-specific_fonts_install.sh
+    711-icon_theme.sh
+    721-cursor-theme.sh
+    730-dconf_db_system_wide.sh
+    733-gnome_shell_settings.sh
+    741-gnome_shell_extensions_per_user.sh
+    734-gnome_shell_extensions_settings.sh
+    751-gdm3_settings.sh
+    #801-gcloud_cli.sh
+    991-wifi_migrate.sh
 )
 
 ################################################################################
