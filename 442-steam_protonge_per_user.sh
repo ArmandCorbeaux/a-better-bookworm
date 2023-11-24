@@ -24,7 +24,7 @@
 REPO_URL="https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"
 
 # Define the local directory  to store files
-DIR_PATH="$HOME/.local/share/Steam/compatibilitytools.d"
+PROTONGE_DIR_PATH="$HOME/.local/share/Steam/compatibilitytools.d"
 
 # Fetch the latest release URL
 release_url=$(curl -s $REPO_URL | grep -o "https://.*\.tar\.gz" | head -n 1)
@@ -34,12 +34,13 @@ release_filename=$(basename "$release_url")
 release_name=$(echo $release_filename | cut -d '.' -f 1)
 
 # Check if the folder exists
-if [ -d "$DIR_PATH/$release_name" ]; then
+if [ -d "$PROTONGE_DIR_PATH/$release_name" ]; then
 
-    echo "The folder $release_name already exists in $DIR_PATH. Skipping installation."
+    echo "The folder $release_name already exists in $PROTONGE_DIR_PATH. Skipping installation."
 
 else
 
+    rm -Rf $PROTONGE_DIR_PATH
     # Create a temporary directory
     temp_dir=$(mktemp -d)
 
@@ -53,15 +54,15 @@ else
     rm "$temp_dir/$release_filename"
 
     # Copy the uncompressed folder to the desired location
-    mkdir -p "$DIR_PATH"
-    cp -r "$temp_dir/"* $DIR_PATH
+    mkdir -p "$PROTONGE_DIR_PATH"
+    cp -r "$temp_dir/"* $PROTONGE_DIR_PATH
 
     # Clean up temporary files and directories
     rm -Rf "$temp_dir"
     
-    echo "Latest release of Proton-GE has been installed."
+    echo "Latest release of Proton-GE has been installed: $release_name"
     echo "To enable FSR, you can add “WINE_FULLSCREEN_FSR=1 %command%” to the launch options of each game in Steam"
     echo "A memento file has been added in your HOME"
     echo "To enable FSR, you have to add this command to the custom line launch options of each game in Steam :" >  "$HOME/memento_fsr_protonge_steam.txt" $> /dev/null
-    echo “WINE_FULLSCREEN_FSR=1 %command%” >> "$HOME/memento_fsr_protonge_steam.txt" $> /dev/null
+    echo “WINE_FULLSCREEN_FSR=1 %command%” > "$HOME/memento_fsr_protonge_steam.txt" $> /dev/null
 fi
