@@ -42,7 +42,7 @@ VSCODE_SETTINGS='{
     "editor.cursorBlinking": "expand",
     "editor.fontLigatures": true,
     "editor.fontVariations": true,
-    "workbench.colorTheme": "Atom One Dark",
+    "workbench.colorTheme": "Night Owl",
     "window.dialogStyle": "custom",
     "telemetry.telemetryLevel": "error",
     "git.autofetch": true,
@@ -54,7 +54,7 @@ VSCODE_SETTINGS='{
 
 VSCODE_EXTENSIONS=(
     PKief.material-icon-theme
-    akamud.vscode-theme-onedark
+    sdras.night-owl
     MS-CEINTL.vscode-language-pack-fr
     donjayamanne.python-environment-manager
     KevinRose.vsc-python-indent
