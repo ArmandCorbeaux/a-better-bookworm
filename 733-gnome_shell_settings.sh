@@ -1,13 +1,40 @@
 #!/bin/bash
-SETTINGS_PATH="/etc/dconf/db/system-wide.d"
-FILE_NAME="00_gnome_shell_settings"
 
+################################################################################
+# 733 - Custom Gnome Shell settings
+################################################################################
+#
+# Job :     Personalize Gnome Shell experience
+#
+# Author :  Armand CORBEAUX
+# Date :    2023-11-15
+#
+# Impact :  system-wide
+#
+# Inputs :  SETTINGS
+# Outputs : $SETTINGS_PATH/$FILE_NAME
+#
+# More informations :
+#           To have a default system settings change, a way would be to change :
+#           /usr/share/glib-2.0/schemas/
+#           Which means to create a customized package of 'gsettings-desktop-schemas'
+
+SETTINGS_PATH="/etc/dconf/db/system-wide.d"
+FILE_NAME="00-gnome_shell_settings"
+
+# Some custom Gnome settings which modify the desktop environment
 SETTINGS=$(cat <<EOF
+[org/gnome/desktop/app-folders]
+folder-children=['Utilities']
+
 [org/gnome/desktop/app-folders/folders/Utilities]
 apps=['org.gnome.Boxes.desktop', 'org.gnome.Evince.desktop', 'org.gnome.Loupe.desktop', 'org.gnome.baobab.desktop', 'org.gnome.font-viewer.desktop', 'org.gnome.Console.desktop', 'yelp.desktop', 'nm-connection-editor.desktop', 'im-config.desktop', 'software-properties-gtk.desktop', 'org.gnome.DiskUtility.desktop']
+categories=['X-GNOME-Utilities']
+name='X-GNOME-Utilities.directory'
+translate=true
 
 [org/gnome/desktop/calendar]
- show-weekdate=true
+show-weekdate=true
 
 [org/gnome/desktop/datetime]
 automatic-timezone=true
@@ -41,6 +68,7 @@ button-layout='appmenu:minimize,maximize,close'
 [org/gnome/mutter]
 center-new-windows=true
 edge-tiling=true
+experimental-features=['scale-monitor-framebuffer']
 
 [org/gnome/nautilus/icon-view]
 default-zoom-level='small'
@@ -51,6 +79,7 @@ show-hidden-files=true
 [org/gnome/shell]
 favorite-apps=['google-chrome.desktop', 'code.desktop', 'org.gnome.Console.desktop', 'org.gnome.Nautilus.desktop']
 app-picker-layout=[{'org.gnome.Software.desktop': <{'position': <0>}>, 'com.mattjakeman.ExtensionManager.desktop': <{'position': <1>}>,'org.gnome.tweaks.desktop': <{'position': <2>}>,'org.gnome.Settings.desktop': <{'position': <3>}>,'Utilities': <{'position': <4>}>,'io.missioncenter.MissionCenter.desktop': <{'position': <5>}>,'steam.desktop': <{'position': <6>}>,'minecraft-launcher.desktop': <{'position': <7>}>}]
+enabled-extensions=['BingWallpaper@ineffable-gmail.com', 'onedrive@diegomerida.com', 'dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com', 'tiling-assistant@leleat-on-github', 'caffeine@patapon.info']
 
 [org/gnome/shell/weather]
 automatic-location=true
@@ -79,7 +108,7 @@ type-format='category'
 EOF
 )
 
-sudo mkdir -p "$PATH"
+sudo mkdir -p "$SETTINGS_PATH"
 
 echo "$SETTINGS" | sudo tee "$SETTINGS_PATH/$FILE_NAME"
 
