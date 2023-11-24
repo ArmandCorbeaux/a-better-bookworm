@@ -34,15 +34,7 @@ EXTENSION_URLS=(
 
 # Install each extension
 for url in "${EXTENSION_URLS[@]}"; do
-  gnome-extensions install "$url"
-done
-
-# get gnome-shell-extension UUIDs
-extension_uuids=($(gnome-extensions list --user))
-
-# enable gnome shell extensions
-for uuid in "${extension_uuids[@]}"; do
-  gnome-extensions enable "$uuid"
+  sudo gnome-extensions install "$url"
 done
 
 # librabry needed to access Bing Wallpaper exntension's settings
