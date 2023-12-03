@@ -23,6 +23,9 @@ REPOSITORY_KEY="https://download.opensuse.org/repositories/home:/npreining:/debi
 DISTRIBUTION_KEYRING_PATH="/usr/share/keyrings"
 DISTRIBUTION_SOURCES_LIST_PATH="/etc/apt/sources.list.d"
 
+ONEDRIVE_CONFIG_FOLDER="/etc/onedrive"
+ONEDRIVE_CONFIG_FILE="config"
+
 # Function to add a repository
 add_repository() {
 
@@ -46,3 +49,16 @@ sudo apt-get update &> /dev/null
 
 # Install onedrive
 sudo apt-get install onedrive -y &> /dev/null
+
+# Add configuration to skip temporary files from sync
+
+# Create folder
+mkdir -p "$ONEDRIVE_CONFIG_FOLDER"
+
+# Add custom option to config file
+echo "Remove a bunch of temporary files from sync with OneDrive client"
+echo "skip_file = \"~*|.~*|*.tmp|*.swp|__*__|.venv|.vscode|log|logs\""  | sudo tee "$ONEDRIVE_CONFIG_FOLDER"/"$ONEDRIVE_CONFIG_FILE"
+echo "skip_dir = \".git\"" | sudo tee -a "$ONEDRIVE_CONFIG_FOLDER"/"$ONEDRIVE_CONFIG_FILE"
+
+# Make the file readable by user accounts
+sudo chmod 755 "$ONEDRIVE_CONFIG_FOLDER"/"$ONEDRIVE_CONFIG_FILE"
