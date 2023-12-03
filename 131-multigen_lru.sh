@@ -37,7 +37,7 @@ SERVICE_FILE_PATH="/etc/systemd/system/mglru.service"
 file_contains_content() {
   local file="$1"
   local content="$2"
-  grep -q "$content" "$file"
+  grep -q "$content" "$file" &> /dev/null
 }
 
 # Check if the service file needs to be updated
