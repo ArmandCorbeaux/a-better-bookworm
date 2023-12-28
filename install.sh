@@ -26,7 +26,7 @@ LIST_OF_SCRIPTS=(
     411-onedrive_install.sh
     421-google_chrome.sh
     431-visual_code.sh
-    432-visual_code_customize_per_user.sh
+    #432-visual_code_customize_per_user.sh
     441-steam_client.sh
     442-steam_protonge_per_user.sh
     #451-oracle_java_jdk.sh
