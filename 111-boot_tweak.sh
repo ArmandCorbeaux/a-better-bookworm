@@ -9,11 +9,12 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  system
+# Impact :  system wide
 #
-# Inputs :  PLYMOUTH_THEME
-#           NEW_GRUB_TIMEOUT, NEW_GRUB_CMDLINE_LINUX_DEFAULT, NEW_GRUB_BACKGROUND
+# Inputs :  NEW_GRUB_TIMEOUT, NEW_GRUB_CMDLINE_LINUX_DEFAULT, NEW_GRUB_BACKGROUND
 #           GRUB_PATH
+#           PLYMOUTH_THEME
+#
 # Outputs : plymouth, GRUB_PATH
 #
 # More informations :

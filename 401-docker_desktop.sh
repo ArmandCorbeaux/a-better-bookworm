@@ -9,11 +9,12 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-08
 #
-# Impact :  system
+# Impact :  system wide
 #
-# Inputs :  DOCKER_REPOSITORY_URL, DOCKER_REPOSITORY_KEY,
+# Inputs :  REPOSITORY_URL, REPOSITORY_KEY,
 #           DISTRIBUTION_KEYRING_PATH, DISTRIBUTION_SOURCES_LIST_PATH,
-#           DISTRIBUTION_SYSTEM_DESKTOP_SHORTCUT
+#           FILE_PATH,
+#           DEB_URLS
 # Outputs : Docker-Desktop
 #
 # More informations :

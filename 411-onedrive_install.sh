@@ -9,11 +9,12 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-08
 #
-# Impact :  system
+# Impact :  system wide
 #
-# Inputs :  ONEDRIVE_REPOSITORY_URL, ONEDRIVE_REPOSITORY_KEY,
-#           DISTRIBUTION_KEYRING_PATH, DISTRIBUTION_SOURCES_LIST_PATH
-# Outputs : apt
+# Inputs :  REPOSITORY_URL, REPOSITORY_KEY,
+#           DISTRIBUTION_KEYRING_PATH, DISTRIBUTION_SOURCES_LIST_PATH,
+#           ONEDRIVE_CONFIG_FOLDER, ONEDRIVE_CONFIG_FILE
+# Outputs : apt, ONEDRIVE_CONFIG_FOLDER, ONEDRIVE_CONFIG_FILE
 #
 # More informations :
 #           https://github.com/abraunegg/onedrive
@@ -57,8 +58,8 @@ mkdir -p "$ONEDRIVE_CONFIG_FOLDER"
 
 # Add custom option to config file
 echo "Remove a bunch of temporary files from sync with OneDrive client"
-echo "skip_file = \"~*|.~*|*.tmp|*.swp|__*__|.venv|.vscode|log|logs\""  | sudo tee "$ONEDRIVE_CONFIG_FOLDER"/"$ONEDRIVE_CONFIG_FILE"
-echo "skip_dir = \".git\"" | sudo tee -a "$ONEDRIVE_CONFIG_FOLDER"/"$ONEDRIVE_CONFIG_FILE"
+echo "skip_file = \"~*|.~*|*.tmp|*.swp|__*__|.venv|.vscode|log|logs\""  | sudo tee "$ONEDRIVE_CONFIG_FOLDER"/"$ONEDRIVE_CONFIG_FILE" &> /dev/null
+echo "skip_dir = \".git\"" | sudo tee -a "$ONEDRIVE_CONFIG_FOLDER"/"$ONEDRIVE_CONFIG_FILE" &> /dev/null
 
 # Make the file readable by user accounts
 sudo chmod 755 "$ONEDRIVE_CONFIG_FOLDER"/"$ONEDRIVE_CONFIG_FILE"

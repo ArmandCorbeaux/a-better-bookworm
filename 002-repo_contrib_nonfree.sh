@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  TARGET
 # Outputs : TARGET

@@ -9,13 +9,14 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-15
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  /etc/network/interfaces
 # Outputs : /etc/network/interfaces, nmcli
 #
 # More informations :
 #           https://wiki.debian.org/NetworkManager
+#           Migrate WiFi and Ethernet settings to Network-Manager
 
 # Backup the current /etc/network/interfaces file
 sudo cp /etc/network/interfaces /etc/network/interfaces.backup

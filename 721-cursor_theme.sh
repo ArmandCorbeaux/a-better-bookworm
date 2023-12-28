@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-14
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  BIBATA_GITHUB_URL, BIBATA_DOWNLOAD_URL,
 #           BIBATA_ARCHIVE_NAME, BIBATA_ARCHIVE_EXTENSION,

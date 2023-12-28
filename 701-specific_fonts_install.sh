@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-14
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  NERD_FONTS_GITHUB_URL, VICTORMONO_URL, NOTO_FONT_APT, FONT_INSTALL_PATH
 # Outputs : apt, FONT_INSTALL_PATH

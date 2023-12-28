@@ -9,15 +9,15 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-09
 #
-# Impact :  system
+# Impact :  system wide
 #
-# Inputs :  DEB_URLS, CHROME_FLAGS, FILE_PATH
+# Inputs :  CHROME_FLAGS, FILE_PATH, DEB_URLS
 # Outputs : apt, FILE_PATH
 #
 # More informations :
 #           https://www.google.com/chrome/?platform=linux           
 #           CHROME_FLAGS aren't taken in account through /etc/environment.
-#           Choice is to modify the system desktop shortcut to enable chrome flags
+#           Choice is to modify the system desktop shortcut to enable widely chrome flags
 # Bugs :
 #           2023-11-10 : Vulkan rendering has been removed as it causes visual issues with Microsoft 365 Online
 

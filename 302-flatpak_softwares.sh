@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-08
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  FLATHUB_APPLICATION_LIST
 # Outputs : flatpak

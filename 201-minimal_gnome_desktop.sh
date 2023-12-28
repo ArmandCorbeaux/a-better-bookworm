@@ -9,10 +9,10 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  PACKAGES
-# Outputs : APT
+# Outputs : apt
 #
 # More informations :
 #           https://packages.debian.org/bookworm/gnome-shell
@@ -47,7 +47,7 @@ if [ ${#missing_packages[@]} -gt 0 ]; then
   sudo apt-get install "${missing_packages[@]}" -y &> /dev/null
 
   # Garbage packages cleanup
-  # Don't need 'gnome-shell-extension-prefs' as 'gnome-shell-extension-manager' will be installed and performs the same stuff
+  # Don't need 'gnome-shell-extension-prefs' as 'gnome-shell-extension-manager' will be installed and has more functions
   sudo apt-get autoremove --purge gnome-shell-extension-prefs -y &> /dev/null
 
   echo "Installation complete."

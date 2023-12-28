@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-15
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  DEB_URLS
 # Outputs : apt

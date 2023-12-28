@@ -9,10 +9,10 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-08
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  USEFUL_TOOLS
-# Outputs : APT
+# Outputs : apt
 #
 # More informations :
 #   cups :                  add printers support

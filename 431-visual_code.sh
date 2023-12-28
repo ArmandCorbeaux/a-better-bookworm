@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-11
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  DEB_URLS
 # Outputs : apt
@@ -17,13 +17,13 @@
 # More informations :
 #           https://code.visualstudio.com/download
 
-# Create a temporary directory for deb files
-temp_dir=$(mktemp -d)
-
 # Define the associative array of app names and their corresponding URLs
 declare -A DEB_URLS=(
     ["Microsoft_Visual_Code"]="http://go.microsoft.com/fwlink/?LinkID=760868"
 )
+
+# Create a temporary directory for deb files
+temp_dir=$(mktemp -d)
 
 # Download deb files
 for app in "${!DEB_URLS[@]}"; do

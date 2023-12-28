@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-13
 #
-# Impact :  user
+# Impact :  current user
 #
 # Inputs :  FILE_PATH, VSCODE_SETTINGS, EXTENSIONS
 # Outputs : apt
@@ -18,7 +18,7 @@
 #           https://code.visualstudio.com/download
 #
 # Bugs :
-#           fonts settings must not to be set with single quotes
+#           in this code, fonts settings must not to be set with single quotes
 
 FILE_PATH="$HOME/.config/Code/User/settings.json"
 

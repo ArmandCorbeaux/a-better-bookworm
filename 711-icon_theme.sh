@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-14
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  MORAWAITA_GITHUB_URL,
 # Outputs : /usr/share/icons

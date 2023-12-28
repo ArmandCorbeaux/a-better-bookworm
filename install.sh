@@ -9,8 +9,8 @@ BRANCH="dev"
 URL="https://github.com/ArmandCorbeaux/better-bookworm/raw/$BRANCH"
 
 LIST_OF_SCRIPTS=(
-    001-repo_backports.sh
-    002-repo_contrib_nonfree.sh
+#    001-repo_backports.sh
+#    002-repo_contrib_nonfree.sh
     003-repo_disable_src.sh
     101-btrfs_fstab.sh
     111-boot_tweak.sh
@@ -23,9 +23,7 @@ LIST_OF_SCRIPTS=(
     301-flatpak_support.sh
     302-flatpak_softwares.sh
     401-docker_desktop.sh
-    402-docker_desktop_enable_per_user.sh
     411-onedrive_install.sh
-    412-onedrive_enable_per_user.sh
     421-google_chrome.sh
     431-visual_code.sh
     432-visual_code_customize_per_user.sh
@@ -33,13 +31,14 @@ LIST_OF_SCRIPTS=(
     442-steam_protonge_per_user.sh
     #451-oracle_java_jdk.sh
     461-minecraft_client.sh
+    501-systemctl_per_user.sh
     701-specific_fonts_install.sh
     711-icon_theme.sh
-    721-cursor-theme.sh
+    721-cursor_theme.sh
     730-dconf_db_system_wide.sh
     733-gnome_shell_settings.sh
-    741-gnome_shell_extensions_per_user.sh
     734-gnome_shell_extensions_settings.sh
+    741-gnome_shell_extensions_per_user.sh
     751-gdm3_settings.sh
     #801-gcloud_cli.sh
     991-wifi_migrate.sh

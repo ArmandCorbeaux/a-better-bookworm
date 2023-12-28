@@ -9,15 +9,16 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-15
 #
-# Impact :  sysyem-wide
+# Impact :  sysyem wide
 #
 # Inputs :  SETTINGS
 # Outputs : $SETTINGS_PATH/$FILE_NAME
 #
 # More informations :
-#           There are customized settings for installed extensions
+#           Create dconf settings for gnome shell extensions applied to each user custom settings
+#
 
-SETTINGS_PATH="/etc/dconf/db/local.d"
+SETTINGS_PATH="/etc/dconf/db/system-wide.d"
 FILE_NAME="01-gnome_shell_extensions_settings"
 
 SETTINGS=$(cat <<EOF

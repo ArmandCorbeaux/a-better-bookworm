@@ -9,14 +9,14 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  USEFUL_TOOLS
 # Outputs : APT
 #
 # More informations :
-#   curl :                  command line tool and library for transferring data with URLs (since 1998)
-#   git :                   distributed version control system designed to handle everything from small to very large projects with speed and efficiency
+#           curl :  command line tool and library for transferring data with URLs (since 1998)
+#           git :   distributed version control system designed to handle everything from small to very large projects with speed and efficiency
 
 # Packages to install
 USEFUL_TOOLS=(

@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-13
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  SERVICE_FILE_CONTENT, SERVICE_FILE_PATH
 # Outputs : SERVICE_FILE_PATH, systemctl

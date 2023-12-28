@@ -9,10 +9,10 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-14
 #
-# Impact :  user
+# Impact :  system wide
 #
 # Inputs :  EXTENSION_URLS
-# Outputs : $HOME/.local/share/gnome-shell/extensions
+# Outputs : /usr/share/gnome-shell/extensions/
 #
 # More informations :
 #           Tiling Assistant :  add modern window tiling engine, disable default gnome one
@@ -21,7 +21,7 @@
 #           Caffeine :          disable screensaver and autosuspend
 #           AppIndicator :      tray icon support for Gnome Shell
 #
-#           Extensiosn can be installed system-wide, but users would be unable to update them
+#           Extensiosn are installed system-wide, but users aren't unable to update them
 
 # gnome-shell-extension URLs
 EXTENSION_URLS=(

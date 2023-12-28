@@ -9,14 +9,14 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  USEFUL_TOOLS
-# Outputs : APT
+# Outputs : apt
 #
 # More informations :
 #   python3-venv :          support for creating lightweight "virtual environments", needed to install a non-Debian-packaged Python package in Debian 12 Bookworm
-#   python3-pip :           package installer for Python
+#   python3-pip :           package installer for Python, uwed by python3-venv
 
 # Packages to install
 USEFUL_TOOLS=(

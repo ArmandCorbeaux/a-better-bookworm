@@ -9,15 +9,14 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-15
 #
-# Impact :  system-wide
+# Impact :  system wide
 #
 # Inputs :  SETTINGS
 # Outputs : $SETTINGS_PATH/$FILE_NAME
 #
 # More informations :
-#           To have a default system settings change, a way would be to change :
-#           /usr/share/glib-2.0/schemas/
-#           Which means to create a customized package of 'gsettings-desktop-schemas'
+#           Create dconf settings for desktop applied to each user custom settings
+#
 
 SETTINGS_PATH="/etc/dconf/db/system-wide.d"
 FILE_NAME="00-gnome_shell_settings"

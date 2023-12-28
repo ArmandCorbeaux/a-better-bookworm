@@ -9,15 +9,17 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-30
 #
-# Impact :  system-wide
+# Impact :  system wide
 #
-# Inputs :  
-# Outputs : 
+# Inputs :  SCRIPT_CONTENT, SERVICE_FILE_CONTENT, SERVICE_FILE_PATH
+# Outputs : SERVICE_FILE_PATH
 #
 # More informations :
-#           
+#           Create a script and a service to enable onedrive and docker-desktop service for all users
+#
 # Bugs :
 #           
+
 SCRIPT_CONTENT=$(cat <<EOF
 #!/bin/bash
 

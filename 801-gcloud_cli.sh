@@ -9,9 +9,9 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-08
 #
-# Impact :  system
+# Impact :  system wide
 #
-# Inputs :  GCP_REPOSITORY_URL, GCP_REPOSITORY_KEY,
+# Inputs :  REPOSITORY_URL, REPOSITORY_KEY,
 #           DISTRIBUTION_KEYRING_PATH, DISTRIBUTION_SOURCES_LIST_PATH
 # Outputs : apt
 #

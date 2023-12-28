@@ -9,10 +9,11 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-15
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  ZRAM_ALGO, ZRAM_PERCENT, ZRAM_PRIORITY
 #           SYSCTL_VALUES
+#           ZRAM_TARGET, SYSCTL_TARGET
 # Outputs : ZRAM_TARGET, SYSCTL_TARGET
 #
 # More informations :

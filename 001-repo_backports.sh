@@ -9,9 +9,9 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-07
 #
-# Impact :  system
+# Impact :  system wide
 # 
-# Inputs :  dist_codename, TARGET
+# Inputs :  TARGET
 # Outputs : TARGET
 #
 # More informations :

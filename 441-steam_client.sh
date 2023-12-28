@@ -9,7 +9,7 @@
 # Author :  Armand CORBEAUX
 # Date :    2023-11-13
 #
-# Impact :  system
+# Impact :  system wide
 #
 # Inputs :  DEB_URLS
 # Outputs : apt
@@ -18,13 +18,13 @@
 #           https://store.steampowered.com/about/
 #
 
-# Create a temporary directory for deb files
-temp_dir=$(mktemp -d)
-
 # Define the associative array of app names and their corresponding URLs
 declare -A DEB_URLS=(
     ["Valve_Steam"]="https://media.steampowered.com/client/installer/steam.deb"
 )
+
+# Create a temporary directory for deb files
+temp_dir=$(mktemp -d)
 
 # Download deb files
 for app in "${!DEB_URLS[@]}"; do
