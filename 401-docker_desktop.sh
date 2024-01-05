@@ -86,11 +86,3 @@ sudo apt-get install $temp_dir/*.deb -y &> /dev/null
 
 # Clean up the temporary directory
 rm -Rf "$temp_dir"
-
-# Hide docker-desktop icon
-line_to_hide_desktop_icon="NoDisplay=true"
-
-# Hide Docker-Desktop shortcut if it's not already done
-if ! grep -q "NoDisplay=true" "$FILE_PATH"; then
-    echo "$line_to_hide_desktop_icon" | sudo tee -a "$FILE_PATH" &> /dev/null
-fi
