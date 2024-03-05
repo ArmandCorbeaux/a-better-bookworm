@@ -31,6 +31,7 @@ LIST_OF_SCRIPTS=(
     442-steam_protonge_per_user.sh
     #451-oracle_java_jdk.sh
     461-minecraft_client.sh
+    471-warp_terminal.sh
     #501-systemctl_per_user.sh
     701-specific_fonts_install.sh
     711-icon_theme.sh
