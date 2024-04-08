@@ -20,6 +20,9 @@
 #           Font Viewer :       previews fonts per name
 #           Mission Center :    monitors system resources usages
 #           Extension Manager : manages Gnome Shell Extensions
+#           Boxes :             Virtual Machine Manager
+#           Filezilla :         Remote files manager
+#           DBeaver :           DataBase manager
 
 # List of Flatpak applications to install
 FLATHUB_APPLICATION_LIST=(
@@ -29,6 +32,9 @@ FLATHUB_APPLICATION_LIST=(
   "org.gnome.Loupe"                   # image viewer
   "org.gnome.font-viewer"             # font viewer
   "org.gnome.Boxes"                   # Virtual Machines manager
+  "org.gnome.firmware"                # Firmware updater
+  "org.filezillaproject.Filezilla"    # Filezilla
+  "io.dbeaver.DBeaverCommunity"       # DBeaver 
 )
 
 # Iterate through the applications and install them

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+
+################################################################################
+# 601 - APPIMAGED
+################################################################################
+#
+# Job :     Enable custom services for current user
+#
+# Author :  Armand CORBEAUX
+# Date :    2023-11-30
+#
+# Impact :  system wide
+#
+# Inputs :  SCRIPT_CONTENT, SERVICE_FILE_CONTENT, SERVICE_FILE_PATH
+# Outputs : SERVICE_FILE_PATH
+#
+# More informations :
+#           Create a script and a service to enable onedrive and docker-desktop service for all users
+#
+# Bugs :
+#           
+
+# URL de la page de release
+url="https://api.github.com/repos/probonopd/go-appimage/releases/tags/continuous"
+
+# Répertoire de destination
+dest_dir="$HOME/Applications"
+
+# Récupérer les informations JSON de la page de release
+release_info=$(curl -s $url)
+
+# Extraire l'URL de téléchargement de la dernière version x86_64 à partir des informations JSON
+download_url=$(echo $release_info | grep -o '"browser_download_url": *"[^"]*appimaged-[0-9]*-x86_64\.AppImage"' | grep -o '"[^"]*"' | grep -o 'https://.*' | sed 's/"$//')
+
+# Télécharger le fichier dans le répertoire de destination
+wget --content-disposition $download_url -P $dest_dir
+
+# Rendre le fichier exécutable
+chmod +x "$dest_dir/$(basename $download_url)"
+
+# Exécuter le fichier
+"$dest_dir/$(basename $download_url)"

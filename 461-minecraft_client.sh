@@ -15,7 +15,7 @@
 # Outputs : apt
 #
 # More informations :
-#           https://store.steampowered.com/about/
+#           https://www.minecraft.net/
 #
 
 # Create a temporary directory for deb files

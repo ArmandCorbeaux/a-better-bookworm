@@ -54,7 +54,7 @@ sudo apt-get install onedrive -y &> /dev/null
 # Add configuration to skip temporary files from sync
 
 # Create folder
-sudo mkdir -p "$ONEDRIVE_CONFIG_FOLDER"
+mkdir -p "$ONEDRIVE_CONFIG_FOLDER"
 
 # Add custom option to config file
 echo "Remove a bunch of temporary files from sync with OneDrive client"
